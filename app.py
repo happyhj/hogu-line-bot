@@ -141,7 +141,10 @@ def callback():
                 if len(carouselColumnArray)==5:
                     continue
                 href = 'https://store.line.me' + li.a.get('href')
-                thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
+                packageId = li.a.find(class_='mdCMN06Img').img.get('src').split('product/')[1].split('/ANDROID')[0]
+
+                thumbnail_image_url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/iphone/main@2x.png'
+
                 title = li.a.find(class_='mdCMN06Ttl').getText()
 
                 print 
