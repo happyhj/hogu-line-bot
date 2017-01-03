@@ -174,14 +174,13 @@ def callback():
                                 title="깔롱깔롱",
                                 text='텍스트를 넣어줘야 한다.',
                                 actions=[                               
-                                    URITemplateAction(label='보기', uri="http://m.naver.com")
+                                    URITemplateAction(label='보기', uri='http://m.naver.com')
                                 ]
                             )
                         )
                     ])
                 )
             )
-            continue
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
