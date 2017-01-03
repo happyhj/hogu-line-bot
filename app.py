@@ -105,12 +105,13 @@ def callback():
         # image 메시지 예제
         # 랜덤 고양이
         if command == 'cat' or command == '릴리친구':
-            carImgUrl = json.loads(requests.get('http://random.cat/meow').content)['file']
+            catImgUrl = json.loads(requests.get('http://random.cat/meow').content)['file']
+            print '[Random Cat]: ' + catImgUrl
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
-                    original_content_url=carImgUrl,
-                    preview_image_url=carImgUrl
+                    original_content_url=catImgUrl,
+                    preview_image_url=catImgUrl
                 )
             )
             continue 
