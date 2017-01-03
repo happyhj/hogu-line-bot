@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+#-*- mode: python -*-
+
+from subprocess import Popen, PIPE
+import sys
+
+def run(command):
+  p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
+  p.wait()
+  return p.returncode
+
+def precommit():
+  # error case: python app compile failed 
+  return run("python -m py_compile app.py")
+
+sys.exit(precommit())
