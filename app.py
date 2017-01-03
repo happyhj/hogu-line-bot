@@ -65,6 +65,7 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
+
 firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
 
 def props(x):
@@ -93,6 +94,13 @@ def callback():
 
         if not isinstance(event, MessageEvent):
             continue
+
+        if event.message.type=='image':
+            event.message.id
+
+            continue
+
+
         if not isinstance(event.message, TextMessage):
             continue
 
@@ -103,13 +111,22 @@ def callback():
             continue
 
         command = command[1:]
-        param = tokens[1]
+        param1 = tokens[1]
 
-        # 커맨드 분석 메시지 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또!!!')
-        )
+
+        if command=='sticker':
+            param2 = tokens[2]
+            line_bot_api.reply_message(
+                event.reply_token,
+                StickerSendMessage(package_id=param1, sticker_id=param2)
+            )
+        else:
+            # 커맨드 분석 메시지 
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또!!!')
+            )
+
 
     return 'OK'
 
