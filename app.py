@@ -120,6 +120,15 @@ def callback():
                 event.reply_token,
                 StickerSendMessage(package_id=param1, sticker_id=param2)
             )
+        if command=='stickerImg':
+            param2 = tokens[2]
+            line_bot_api.reply_message(
+                event.reply_token,
+                ImageSendMessage(
+                    original_content_url='http://dl.stickershop.line.naver.jp/products/0/0/1/'+param1+'/PC/stickers/'+param2+'.png ',
+                    preview_image_url='http://dl.stickershop.line.naver.jp/products/0/0/1/'+param1+'/PC/stickers/'+param2+'.png '
+                )
+            )
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
