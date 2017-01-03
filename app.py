@@ -108,7 +108,7 @@ def callback():
         # 커맨드 분석 메시지 
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또')
+            TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또!!!')
         )
 
     return 'OK'
