@@ -174,10 +174,14 @@ def callback():
                                 title=title,
                                 text='',
                                 actions=[
-                                    URITemplateAction(
-                                        label='보기',
-                                        uri=href
-                                    )
+                                    MessageTemplateAction(
+                                        label=title,
+                                        text='스티커 보로가쟝'
+                                    )                                
+                                    # URITemplateAction(
+                                    #     label='보기',
+                                    #     uri=href
+                                    # )
                                 ]
                             )
                         )
