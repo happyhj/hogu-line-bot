@@ -146,7 +146,7 @@ def callback():
             for li in l:
                 if len(carouselColumnArray)==5:
                     continue
-                href =  'https://store.line.me' + li.a.get('href')
+                href = 'https://store.line.me' + li.a.get('href')
                 thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
                 title = li.a.find(class_='mdCMN06Ttl').getText()
                 carouselColumnArray.append(
@@ -162,7 +162,7 @@ def callback():
                         ]
                     )
                 )
-
+            print carouselColumnArray
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(
