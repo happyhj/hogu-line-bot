@@ -113,22 +113,23 @@ def callback():
         command = command[1:]
         param1 = tokens[1]
 
-
         if command=='sticker':
             param2 = tokens[2]
             line_bot_api.reply_message(
                 event.reply_token,
                 StickerSendMessage(package_id=param1, sticker_id=param2)
             )
+            continue
         if command=='stickerImg':
             param2 = tokens[2]
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
-                    original_content_url='http://dl.stickershop.line.naver.jp/products/0/0/1/'+param1+'/PC/stickers/'+param2+'.png ',
-                    preview_image_url='http://dl.stickershop.line.naver.jp/products/0/0/1/'+param1+'/PC/stickers/'+param2+'.png '
+                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+param1+'/android/stickers/'+param2+'.png',
+                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+param1+'/android/stickers/'+param2+'.png'
                 )
             )
+            continue
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
