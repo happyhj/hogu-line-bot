@@ -140,7 +140,7 @@ def callback():
             li = l[0]
             href = 'https://store.line.me/' + li.a.get('href')
             thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
-            title = li.a.find(class_='mdCMN06Ttl').getText()
+            titleText = li.a.find(class_='mdCMN06Ttl').getText()
 
             print href
             # for li in l:
@@ -171,12 +171,12 @@ def callback():
                         carouselColumnArray.append(
                             CarouselColumn(
                                 thumbnail_image_url=thumbnail_image_url,
-                                title=title,
-                                text='',
+                                title=titleText,
+                                text='텍스트를 넣어줘야 한다.',
                                 actions=[                               
                                     URITemplateAction(
                                         label='보기',
-                                        uri=href,
+                                        uri=href
                                     )
                                 ]
                             )
