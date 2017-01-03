@@ -140,10 +140,12 @@ def callback():
             l = bs.find_all("li", class_="mdCMN12Li")
             carouselColumnArray = []
             for li in l:
+                if len(carouselColumnArray)==5:
+                    continue
                 href = li.a.get('href')
                 thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
                 title = li.a.find(class_='mdCMN06Ttl').getText()
-                carouselColumnArray.push(
+                carouselColumnArray.append(
                     CarouselColumn(
                         thumbnail_image_url=thumbnail_image_url,
                         title=title,
