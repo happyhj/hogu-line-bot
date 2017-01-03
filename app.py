@@ -137,23 +137,19 @@ def callback():
             l = bs.find_all("li", class_="mdCMN12Li")
             carouselColumnArray = []
 
-            li = l[0]
-            href = 'https://store.line.me' + li.a.get('href')
-            thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
-            titleText = li.a.find(class_='mdCMN06Ttl').getText()
-
-            print href
             for li in l:
                 if len(carouselColumnArray)==5:
                     continue
                 href = 'https://store.line.me' + li.a.get('href')
                 thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
                 title = li.a.find(class_='mdCMN06Ttl').getText()
+
+                print 
                 carouselColumnArray.append(
                     CarouselColumn(
                         thumbnail_image_url=thumbnail_image_url,
                         title=title,
-                        text='',
+                        text='살려줘',
                         actions=[
                             URITemplateAction(
                                 label='보기',
