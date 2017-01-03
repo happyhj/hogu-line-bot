@@ -7,10 +7,17 @@ import sys
 def run(command):
   p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
   p.wait()
-  return p.returncode
+  return p.returncode, p.stdout.read().strip().split(), p.stderr.read()
 
 def precommit():
+  returnInfo = run("python -m py_compile *.py")
+  returncode = returnInfo[0]
+
   # error case: python app compile failed 
-  return run("python -m py_compile app.py")
+  if returncode==1:
+   	print "COMPILE ERROR, see below. Fix error and try again"
+  	print returnInfo[2]
+  	return 1
+  return 0
 
 sys.exit(precommit())

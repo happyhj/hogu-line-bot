@@ -65,12 +65,6 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
-
-# init firebase 
-firebase = firebase.FirebaseApplication('https://heirumi-bot.firebaseio.com', None)
-#result = firebase.get('/events', None)
-#print result 
-
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
 
@@ -95,13 +89,6 @@ def callback():
 
         if not isinstance(event, MessageEvent):
             continue
-
-        if eventDict.message.type == 'image' || eventDict.message.type == 'video':
-            # getContents : eventDict.message.id and save files to firebase storage
-            # after that // result = firebase.post('/events', eventDict)        
-
-
-
         if not isinstance(event.message, TextMessage):
             continue
 
@@ -112,170 +99,14 @@ def callback():
 
         command = command[1:]
 
-        if command == 'text':
-            line_bot_api.reply_message(
-                event.reply_token,
-                #TextSendMessage(text=event.message.text)
-                TextSendMessage(text='Hello world!')
-            )
-            continue
-
-        if command == 'sticker':
-            line_bot_api.reply_message(
-                event.reply_token,
-                StickerSendMessage(sticker_id=1, package_id=1)
-            )
-            continue 
-
-        if command == 'image':
+        # image 메시지 예제
+        # 랜덤 고양이
+        if command == 'cat' or command == '릴리친구':
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
-                    original_content_url='https://i.imgur.com/XkPOG6s.jpeg',
-                    preview_image_url='https://i.imgur.com/WHPSX62.jpeg'
-                )
-            )
-            continue 
-
-        if command == 'video':
-            line_bot_api.reply_message(
-                event.reply_token,
-                VideoSendMessage(
-                    original_content_url='https://video-icn1-1.xx.fbcdn.net/v/t42.1790-2/15815603_1228027843979861_3120848989621059584_n.mp4?efg=eyJybHIiOjY4MiwicmxhIjo1MTIsInZlbmNvZGVfdGFnIjoic3ZlX3NkIn0%3D&rl=682&vabr=379&oh=e5922d382ec45c3c9b50ca0e52e0a93b&oe=586A7BCB',
-                    preview_image_url='https://scontent-icn1-1.xx.fbcdn.net/v/t15.0-10/p480x480/15816042_1418185544882806_5129367115333107712_n.jpg?oh=209f20c7e6c56741c5a476b0a6f3d96e&oe=591DDD9C'
-                )
-            )
-            continue 
-
-        if command == 'audio':
-            line_bot_api.reply_message(
-                event.reply_token,
-                AudioSendMessage(
-                    original_content_url='http://techslides.com/demos/samples/sample.m4a',
-                    duration=3000
-                )
-            )
-            continue 
-
-        if command == 'location':
-            line_bot_api.reply_message(
-                event.reply_token,
-                LocationSendMessage(
-                    title='첼시 마켓',
-                    address='75 9th Ave, New York, NY 10011 \nchelseamarket.com',
-                    latitude=40.7421218,
-                    longitude=-74.0073127
-                )
-            )
-            continue 
-
-        if command == 'buttons':
-            line_bot_api.reply_message(
-                event.reply_token,
-                TemplateSendMessage(
-                    alt_text='[buttons] unsupported device',
-                    template=ButtonsTemplate(
-                        title="Menu",
-                        text="Please select",
-                        thumbnail_image_url='https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles9.naver.net%2F20140806_213%2Fbebop38_1407319754921zAbXb_JPEG%2F3b96436c1667e9dbae9a320745b58b25.jpg&type=sc960_832',
-                        actions=[
-                            PostbackTemplateAction(
-                                label='Post Back',
-                                data='이러한 데이터를 반환합니다.',
-                                text='Post Back 으로 데이터를 반환 했습니다'
-                            ),
-                            MessageTemplateAction(
-                                label='Message',
-                                text='Message Action 으로 메시지를 전송했습니다'
-                            ),
-                            URITemplateAction(
-                                label='Open Safari',
-                                uri='https://m.naver.com/'
-                            )
-                        ]
-
-                    )
-                )
-            )
-            continue 
-
-        if command == 'confirm':
-            line_bot_api.reply_message(
-                event.reply_token,
-                TemplateSendMessage(
-                    alt_text='[confirm] unsupported device',
-                    template=ButtonsTemplate(
-                        text='Are you sure?',
-                        actions=[
-                            PostbackTemplateAction(
-                                label='Post Back',
-                                data='이러한 데이터를 반환합니다.',
-                                text='Post Back 으로 데이터를 반환 했습니다'
-                            ),
-                            MessageTemplateAction(
-                                label='Message',
-                                text='Message Action 으로 메시지를 전송했습니다'
-                            ),
-                            URITemplateAction(
-                                label='Open Safari',
-                                uri='https://m.naver.com/'
-                            )
-                        ]
-
-                    )
-                )
-            )
-            continue 
-
-        if command == 'carousel':
-            line_bot_api.reply_message(
-                event.reply_token,
-                TemplateSendMessage(
-                    alt_text='[carousel] unsupported device',
-                    template=CarouselTemplate(
-                        columns=[
-                            CarouselColumn(
-                                thumbnail_image_url='https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles9.naver.net%2F20140806_213%2Fbebop38_1407319754921zAbXb_JPEG%2F3b96436c1667e9dbae9a320745b58b25.jpg&type=sc960_832',
-                                title='this is menu1',
-                                text='description1',
-                                actions=[
-                                    PostbackTemplateAction(
-                                        label='postback1',
-                                        text='postback text1',
-                                        data='action=buy&itemid=1'
-                                    ),
-                                    MessageTemplateAction(
-                                        label='message1',
-                                        text='message text1'
-                                    ),
-                                    URITemplateAction(
-                                        label='uri1',
-                                        uri='https://m.naver.com'
-                                    )
-                                ]
-                            ),
-                            CarouselColumn(
-                                thumbnail_image_url='https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles9.naver.net%2F20140806_213%2Fbebop38_1407319754921zAbXb_JPEG%2F3b96436c1667e9dbae9a320745b58b25.jpg&type=sc960_832',
-                                title='this is menu2',
-                                text='description2',
-                                actions=[
-                                    PostbackTemplateAction(
-                                        label='postback2',
-                                        text='postback text2',
-                                        data='action=buy&itemid=2'
-                                    ),
-                                    MessageTemplateAction(
-                                        label='message2',
-                                        text='message text2'
-                                    ),
-                                    URITemplateAction(
-                                        label='uri2',
-                                        uri='https://m.naver.com'
-                                    )
-                                ]
-                            )
-                        ]
-                    )
+                    original_content_url='http://thecatapi.com/api/images/get?format=src&size=full',
+                    preview_image_url='http://thecatapi.com/api/images/get?format=src&size=small'
                 )
             )
             continue 
