@@ -139,30 +139,50 @@ def callback():
             bs = BeautifulSoup(r.content, 'html.parser')
             l = bs.find_all("li", class_="mdCMN12Li")
             carouselColumnArray = []
-            for li in l:
-                if len(carouselColumnArray)==5:
-                    continue
-                href = li.a.get('href')
-                thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
-                title = li.a.find(class_='mdCMN06Ttl').getText()
-                carouselColumnArray.append(
-                    CarouselColumn(
-                        thumbnail_image_url=thumbnail_image_url,
-                        title=title,
-                        text='',
-                        actions=[
-                            URITemplateAction(
-                                label='보기',
-                                uri=href
-                            )
-                        ]
-                    )
-                )
+
+            li = l[0]
+            href = li.a.get('href')
+            thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
+            title = li.a.find(class_='mdCMN06Ttl').getText()
+            # for li in l:
+            #     if len(carouselColumnArray)==5:
+            #         continue
+            #     href = li.a.get('href')
+            #     thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
+            #     title = li.a.find(class_='mdCMN06Ttl').getText()
+            #     carouselColumnArray.append(
+            #         CarouselColumn(
+            #             thumbnail_image_url=thumbnail_image_url,
+            #             title=title,
+            #             text='',
+            #             actions=[
+            #                 URITemplateAction(
+            #                     label='보기',
+            #                     uri=href
+            #                 )
+            #             ]
+            #         )
+            #     )
+
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(
                     alt_text='PC에서는 볼수없또',
-                    template=CarouselTemplate(columns=carouselColumnArray)
+                    template=CarouselTemplate(columns=[
+                        carouselColumnArray.append(
+                            CarouselColumn(
+                                thumbnail_image_url=thumbnail_image_url,
+                                title=title,
+                                text='',
+                                actions=[
+                                    URITemplateAction(
+                                        label='보기',
+                                        uri=href
+                                    )
+                                ]
+                            )
+                        )
+                    ])
                 )
             )
             continue
