@@ -2,3 +2,4 @@ line-bot-sdk
 flask
 requests==1.1.0
 python-firebase
+BeautifulSoup4

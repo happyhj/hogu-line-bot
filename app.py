@@ -13,6 +13,7 @@
 #  under the License.
 
 from __future__ import unicode_literals
+from bs4 import BeautifulSoup
 from firebase import firebase
 
 import requests
@@ -51,6 +52,9 @@ from linebot.models import (
 
 app = Flask(__name__)
 
+#for li in lImg:
+#    print li.img.get('src')
+
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
@@ -67,6 +71,8 @@ line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
 firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
+
+
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -107,26 +113,54 @@ def callback():
         tokens = event.message.text.split()
         command = tokens[0]
 
-        if command[0] != '@' or len(tokens)<2:
+        if command[0] != '@':
             continue
 
         command = command[1:]
-        param1 = tokens[1]
 
-        if command=='sticker':
-            param2 = tokens[2]
+        if command=='sticker' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
-                StickerSendMessage(package_id=param1, sticker_id=param2)
+                StickerSendMessage(package_id=tokens[1], sticker_id=tokens[2])
             )
             continue
-        if command=='stickerImg':
-            param2 = tokens[2]
+        if command=='stickerImg' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
-                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+param1+'/android/stickers/'+param2+'.png',
-                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+param1+'/android/stickers/'+param2+'.png'
+                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+tokens[1]+'/android/stickers/'+tokens[2]+'.png',
+                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+tokens[1]+'/android/stickers/'+tokens[2]+'.png'
+                )
+            )
+            continue
+
+        if command=='스티커' and len(tokens)==1:
+            r = requests.get("https://store.line.me/stickershop/home/user/ko")
+            bs = BeautifulSoup(r.content, 'html.parser')
+            l = bs.find_all("li", class_="mdCMN12Li")
+            carouselColumnArray = []
+            for li in l:
+                href = li.a.get('href')
+                thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
+                title = li.a.find(class_='mdCMN06Ttl').getText()
+                carouselColumnArray.push(
+                    CarouselColumn(
+                        thumbnail_image_url=thumbnail_image_url,
+                        title=title,
+                        text='',
+                        actions=[
+                            URITemplateAction(
+                                label='보기',
+                                uri=href
+                            )
+                        ]
+                    )
+                )
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(
+                    alt_text='PC에서는 볼수없또',
+                    template=CarouselTemplate(columns=carouselColumnArray)
                 )
             )
             continue
