@@ -89,6 +89,7 @@ def callback():
         # log every event to firebase
         eventDict = json.loads(str(event));
         firebase.post('/events', eventDict)
+        print eventDict
 
         if not isinstance(event, MessageEvent):
             continue
@@ -104,16 +105,12 @@ def callback():
         command = command[1:]
         param = tokens[1]
 
-        # image 메시지 예제
-        if command == 'lorempixel':
-            line_bot_api.reply_message(
-                event.reply_token,
-                ImageSendMessage(
-                    original_content_url="http://lorempixel.com/800/600/"+param+"/",
-                    preview_image_url="http://lorempixel.com/200/150/"+param+"/"
-                )
-            )
-            continue 
+        # 커맨드 분석 메시지 
+        line_bot_api.reply_message(
+            event.reply_token,
+            #TextSendMessage(text=event.message.text)
+            TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또')
+        )
 
     return 'OK'
 
