@@ -138,7 +138,7 @@ def callback():
             carouselColumnArray = []
 
             li = l[0]
-            href = 'https://store.line.me/' + li.a.get('href')
+            href = 'https://store.line.me' + li.a.get('href')
             thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
             titleText = li.a.find(class_='mdCMN06Ttl').getText()
 
@@ -170,13 +170,13 @@ def callback():
                     template=CarouselTemplate(columns=[
                         carouselColumnArray.append(
                             CarouselColumn(
-                                thumbnail_image_url=thumbnail_image_url,
-                                title=titleText,
+                                thumbnail_image_url='https://i.imgur.com/XkPOG6s.jpeg',
+                                title="깔롱깔롱",
                                 text='텍스트를 넣어줘야 한다.',
                                 actions=[                               
                                     URITemplateAction(
                                         label='보기',
-                                        uri=href
+                                        uri="http://m.naver.com"
                                     )
                                 ]
                             )
