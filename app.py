@@ -52,9 +52,6 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-#for li in lImg:
-#    print li.img.get('src')
-
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
@@ -141,9 +138,11 @@ def callback():
             carouselColumnArray = []
 
             li = l[0]
-            href = li.a.get('href')
+            href = 'https://store.line.me/' + li.a.get('href')
             thumbnail_image_url = li.a.find(class_='mdCMN06Img').img.get('src')
             title = li.a.find(class_='mdCMN06Ttl').getText()
+
+            print href
             # for li in l:
             #     if len(carouselColumnArray)==5:
             #         continue
