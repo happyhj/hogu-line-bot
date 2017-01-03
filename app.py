@@ -173,15 +173,11 @@ def callback():
                                 thumbnail_image_url=thumbnail_image_url,
                                 title=title,
                                 text='',
-                                actions=[
-                                    # MessageTemplateAction(
-                                    #     label=title,
-                                    #     text='스티커 보로가쟝'
-                                    # )                                
-                                    # URITemplateAction(
-                                    #     label='보기',
-                                    #     uri=href
-                                    # )
+                                actions=[                               
+                                    URITemplateAction(
+                                        label='보기',
+                                        uri=href,
+                                    )
                                 ]
                             )
                         )
