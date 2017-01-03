@@ -65,6 +65,7 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
+firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -85,33 +86,31 @@ def callback():
 
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
+        # log every event to firebase
         eventDict = json.loads(str(event));
-        #firebase.post('/events', new_user)
+        firebase.post('/events', eventDict)
 
         if not isinstance(event, MessageEvent):
             continue
         if not isinstance(event.message, TextMessage):
             continue
 
-        command = event.message.text.split()[0]
+        tokens = event.message.text.split()
+        command = tokens[0]
 
-        if command[0] != '@':
+        if command[0] != '@' or len(tokens)<2:
             continue
 
         command = command[1:]
-
-        
+        param = tokens[1]
 
         # image 메시지 예제
-        # 랜덤 고양이
-        if command == 'cat' or command == '릴리친구':
-            catImgUrl = json.loads(requests.get('http://random.cat/meow').content)['file']
-            print '[Random Cat]: ' + catImgUrl
+        if command == 'lorempixel':
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
-                    original_content_url=catImgUrl,
-                    preview_image_url=catImgUrl
+                    original_content_url="http://lorempixel.com/800/600/"+param+"/",
+                    preview_image_url="http://lorempixel.com/200/150/"+param+"/"
                 )
             )
             continue 
