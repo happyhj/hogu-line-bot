@@ -28,7 +28,7 @@ heroku 의 line web bot 서버에 배포됨
 heroku 가입 한 후 가입이메일을 오너에게 알려 heroku 서버 권한들 등록받아야함
 권한등록이 끝난 후 [heroku cli 를 설치](https://devcenter.heroku.com/articles/heroku-cli) 한 다음 아래 커맨드를 실행한다.
 ```
-$ heroku logs --app hogu-line-bot
+$ heroku logs --app hogu-line-bot --tail
 ```
 
 
