@@ -163,22 +163,13 @@ def callback():
                     )
                 )
 
-            # line_bot_api.reply_message(
-            #     event.reply_token,
-            #     TemplateSendMessage(
-            #         alt_text='PC에서는 볼수없또',
-            #         template=CarouselTemplate(columns=[
-            #             CarouselColumn(
-            #                 thumbnail_image_url='https://i.imgur.com/XkPOG6s.jpeg',
-            #                 title="깔롱깔롱",
-            #                 text='텍스트를 넣어줘야 한다.',
-            #                 actions=[                               
-            #                     URITemplateAction(label='보기', uri='http://m.naver.com')
-            #                 ]
-            #             )
-            #         ])
-            #     )
-            # )
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(
+                    alt_text='PC에서는 볼수없또',
+                    template=CarouselTemplate(columns=carouselColumnArray)
+                )
+            )
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
