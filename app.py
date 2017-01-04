@@ -13,6 +13,7 @@
 #  under the License.
 
 from __future__ import unicode_literals
+from bs4 import BeautifulSoup
 from firebase import firebase
 
 import requests
@@ -65,7 +66,10 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
+
 firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
+
+
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -93,23 +97,85 @@ def callback():
 
         if not isinstance(event, MessageEvent):
             continue
+
+        if event.message.type=='image':
+            event.message.id
+
+            continue
+
+
         if not isinstance(event.message, TextMessage):
             continue
 
         tokens = event.message.text.split()
         command = tokens[0]
 
-        if command[0] != '@' or len(tokens)<2:
+        if command[0] != '@':
             continue
 
         command = command[1:]
-        param = tokens[1]
 
-        # 커맨드 분석 메시지 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또')
-        )
+        if command=='sticker' and len(tokens)==3:
+            line_bot_api.reply_message(
+                event.reply_token,
+                StickerSendMessage(package_id=tokens[1], sticker_id=tokens[2])
+            )
+            continue
+        if command=='stickerImg' and len(tokens)==3:
+            line_bot_api.reply_message(
+                event.reply_token,
+                ImageSendMessage(
+                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+tokens[1]+'/android/stickers/'+tokens[2]+'.png',
+                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+tokens[1]+'/android/stickers/'+tokens[2]+'.png'
+                )
+            )
+            continue
+
+        if command=='스티커' and len(tokens)==1:
+            r = requests.get("https://store.line.me/stickershop/home/user/ko")
+            bs = BeautifulSoup(r.content, 'html.parser')
+            l = bs.find_all("li", class_="mdCMN12Li")
+            carouselColumnArray = []
+
+            for li in l:
+                if len(carouselColumnArray)==5:
+                    continue
+                href = 'https://store.line.me' + li.a.get('href')
+                packageId = li.a.find(class_='mdCMN06Img').img.get('src').split('product/')[1].split('/ANDROID')[0]
+
+                thumbnail_image_url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/iphone/main@2x.png'
+
+                title = li.a.find(class_='mdCMN06Ttl').getText()
+
+                print 
+                carouselColumnArray.append(
+                    CarouselColumn(
+                        thumbnail_image_url=thumbnail_image_url,
+                        title=title,
+                        text='살려줘',
+                        actions=[
+                            URITemplateAction(
+                                label='보기',
+                                uri=href
+                            )
+                        ]
+                    )
+                )
+            print carouselColumnArray
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(
+                    alt_text='PC에서는 볼수없또',
+                    template=CarouselTemplate(columns=carouselColumnArray)
+                )
+            )
+        else:
+            # 커맨드 분석 메시지 
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또!!!')
+            )
+
 
     return 'OK'
 
