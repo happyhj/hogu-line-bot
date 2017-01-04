@@ -178,7 +178,19 @@ def callback():
                 event.reply_token,
                 TextSendMessage(text='스티커가 ' + tokens[1] + '로 저장되어또!!!')
             )
+        if command=='커스텀' and len(tokens) == 2:
+            query = tokens[2]
+            result = firebase.get('/customSticker/' + query)
+            packageId = result.packageId
+            stickerId = result.stickerId
 
+            line_bot_api.reply_message(
+                event.reply_token,
+                ImageSendMessage(
+                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
+                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png'
+                )
+            )
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
