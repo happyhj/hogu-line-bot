@@ -182,8 +182,8 @@ def callback():
 
             print result
 
-            packageId = result.packageId
-            stickerId = result.stickerId
+            packageId = result[packageId]
+            stickerId = result[stickerId]
 
             line_bot_api.reply_message(
                 event.reply_token,
