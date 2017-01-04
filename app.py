@@ -187,10 +187,7 @@ def callback():
 
             line_bot_api.reply_message(
                 event.reply_token,
-                ImageSendMessage(
-                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
-                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png'
-                )
+                StickerSendMessage(package_id=packageId, sticker_id=stickerId)
             )
         else:
             # 커맨드 분석 메시지 
