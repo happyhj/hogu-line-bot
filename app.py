@@ -180,7 +180,7 @@ def callback():
             )
         if command=='커스텀' and len(tokens) == 2:
             query = tokens[1]
-            result = firebase.get('/customSticker/' + query)
+            result = firebase.get('/customSticker', query)
             packageId = result.packageId
             stickerId = result.stickerId
 
