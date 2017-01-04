@@ -167,7 +167,7 @@ def callback():
                     template=CarouselTemplate(columns=carouselColumnArray)
                 )
             )
-        if command='스티커추가' and len(tokens) == 4:
+        if command=='스티커추가' and len(tokens) == 4:
             stickerInfo[name] = tokens[1]
             stickerInfo[packageId] = tokens[2]
             stickerInfo[stickerId] = tokens[3]
