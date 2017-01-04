@@ -168,12 +168,13 @@ def callback():
                 )
             )
         if command=='스티커추가' and len(tokens) == 4:
-            stickerInfo[name] = tokens[1]
             stickerInfo[packageId] = tokens[2]
             stickerInfo[stickerId] = tokens[3]
+
+            print stickerInfo
             
-            # save custom sticker in firebase
-            firebase.post('/customSticker', stickerInfo)
+            # save custom sticker in firebase 
+            firebase.post('/customSticker/' + tokens[1], stickerInfo)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text='스티커가 ' + tokens[1] + '로 저장되어또!!!')
@@ -183,7 +184,7 @@ def callback():
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='커맨드 ' + command +', 인자 ' + tokens[1] +' 을 입력 받았또!!!')
+                TextSendMessage(text='커맨드 ' + command +', 인자 [' + tokens[1] +'] 을 입력 받았또!!!')
             )
 
 
