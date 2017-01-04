@@ -168,10 +168,8 @@ def callback():
                 )
             )
         if command=='스티커추가' and len(tokens) == 4:
-            stickerInfo = {}
-            stickerInfo[packageId] = tokens[2]
-            stickerInfo[stickerId] = tokens[3]
-
+            stickerInfo = {'packageId' : tokens[2], 'stickerId' : tokens[3]}
+        
             print stickerInfo
             
             # save custom sticker in firebase 
