@@ -179,7 +179,7 @@ def callback():
                 TextSendMessage(text='스티커가 ' + tokens[1] + '로 저장되어또!!!')
             )
         if command=='커스텀' and len(tokens) == 2:
-            query = tokens[2]
+            query = tokens[1]
             result = firebase.get('/customSticker/' + query)
             packageId = result.packageId
             stickerId = result.stickerId
