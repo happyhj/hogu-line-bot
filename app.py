@@ -69,8 +69,6 @@ parser = WebhookParser(channel_secret)
 
 firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
 
-
-
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
 
@@ -181,6 +179,9 @@ def callback():
         if command=='커스텀' and len(tokens) == 2:
             query = tokens[1]
             result = firebase.get('/customSticker', query)
+
+            print result
+
             packageId = result.packageId
             stickerId = result.stickerId
 
