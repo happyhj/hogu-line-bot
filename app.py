@@ -170,8 +170,8 @@ def callback():
         
             print stickerInfo
             
-            # save custom sticker in firebase. add last slash to remove unique number
-            firebase.post('/customSticker/' + tokens[1] + '/', stickerInfo)
+            # save custom sticker in firebase. use patch and add last slash to remove unique number
+            firebase.patch('/customSticker/' + tokens[1] + '/', stickerInfo)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text='스티커가 ' + tokens[1] + '로 저장되어또!!!')
