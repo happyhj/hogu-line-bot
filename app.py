@@ -91,7 +91,7 @@ def callback():
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         # log every event to firebase
-        eventDict = json.loads(str(event));
+        eventDict = json.loads(str(event))
         firebase.post('/events', eventDict)
         print eventDict
 
@@ -100,9 +100,7 @@ def callback():
 
         if event.message.type=='image':
             event.message.id
-
             continue
-
 
         if not isinstance(event.message, TextMessage):
             continue
@@ -169,11 +167,23 @@ def callback():
                     template=CarouselTemplate(columns=carouselColumnArray)
                 )
             )
+        if command='스티커추가' and len(tokens) == 4:
+            stickerInfo[name] = tokens[1]
+            stickerInfo[packageId] = tokens[2]
+            stickerInfo[stickerId] = tokens[3]
+            
+            # save custom sticker in firebase
+            firebase.post('/customSticker', stickerInfo)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='스티커가 ' + tokens[1] + '로 저장되어또!!!')
+            )
+
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또!!!')
+                TextSendMessage(text='커맨드 ' + command +', 인자 ' + tokens[1] +' 을 입력 받았또!!!')
             )
 
 
