@@ -69,12 +69,6 @@ parser = WebhookParser(channel_secret)
 
 firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
 
-result = firebase.get('/customSticker', '인사')
-
-print result
-
-result = json.loads(result)
-
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
 
@@ -187,7 +181,6 @@ def callback():
             result = firebase.get('/customSticker', query)
 
             print result[0]
-
 
             line_bot_api.reply_message(
                 event.reply_token,
