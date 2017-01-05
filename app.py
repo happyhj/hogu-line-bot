@@ -165,6 +165,63 @@ def callback():
                     template=CarouselTemplate(columns=carouselColumnArray)
                 )
             )
+        if command=='stk.remove' and len(tokens) == 4:
+            alias = tokens[1]
+            packageId = tokens[2]
+            stickerId = tokens[3]
+
+            stickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
+            targetIdx  = -1
+            # 기존 스티커 리스트를 가져와서 
+            aliasInfo = firebase.get('/customSticker', alias)
+
+            if aliasInfo is not None:
+                stickerList = aliasInfo.get('list')
+                # 이미 있는 스티커면 인덱스 기록
+                for idx, stickerInfo in stickerList:
+                    if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
+                        targetIdx = idx
+            else:
+                return
+
+            # targetIdx 가 -1 이 아니면 stickerList 에서 해당 스티커 삭제 
+            if targetIdx!=-1:
+                stickerList.pop(targetIdx)
+                aliasInfo = { "list": stickerList }
+
+                # save custom sticker in firebase. use patch and add last slash to remove unique number
+                firebase.patch('/customSticker/' + alias + '/', aliasInfo)
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text='스티커가 ' + alias + '에서 지오져또..')
+                )
+        if command=='stk.list' and len(tokens) == 2:
+            alias = tokens[1]
+            # 해당하는 스티커 목록을 가져온다 
+            aliasInfo = firebase.get('/customSticker', alias)
+            stickerList = []
+            if idx, aliasInfo is not None:
+                stickerList = aliasInfo.get('list')
+                carouselColumnArray = []
+                for stickerInfo in stickerList:
+                    packageId = stickerInfo.get('packageId')
+                    stickerId = stickerInfo.get('stickerId')
+                    carouselColumnArray.append(
+                        CarouselColumn(
+                            thumbnail_image_url=thumbnail_image_url,
+                            title=alias,
+                            text=str(idx),
+                            actions=[
+                                MessageTemplateAction(
+                                    label='지우기',
+                                    text='@stk.remove '+alias+ ' '+ packageId + ' ' + stickerId
+                                )
+                            ]
+                        )
+                    )
+            else:
+                print "그런거 없또"
+
         if command=='stk.add' and len(tokens) == 4:
             alias = tokens[1]
             packageId = tokens[2]
