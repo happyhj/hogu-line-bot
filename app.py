@@ -185,10 +185,15 @@ def callback():
             packageId = result['packageId']
             stickerId = result['stickerId']
 
+            # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
             line_bot_api.reply_message(
                 event.reply_token,
-                StickerSendMessage(package_id=packageId, sticker_id=stickerId)
+                ImageSendMessage(
+                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
+                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png' 
+                )
             )
+            continue
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
