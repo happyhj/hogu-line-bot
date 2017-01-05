@@ -203,8 +203,7 @@ def callback():
             alias = tokens[1]
             aliasInfo = firebase.get('/customSticker', alias)
 
-            if aliasInfo is None:
-            else:
+            if aliasInfo is not None:
                 # 랜덤하게 하나를 고른다
                 stickerList = aliasInfo.get('list')
                 stickerInfo = random.choice(stickerList)
