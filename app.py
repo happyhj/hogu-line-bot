@@ -195,28 +195,21 @@ def callback():
                     event.reply_token,
                     TextSendMessage(text='스티커가 ' + alias + '에서 지오져또..')
                 )
-
-        print tokens
-        print command
-
         if command=='stk.list' and len(tokens) == 2:
-            print '[stk.list] start'
             alias = tokens[1]
             # 해당하는 스티커 목록을 가져온다 
             aliasInfo = firebase.get('/customSticker', alias)
-            print aliasInfo
             stickerList = []
             if aliasInfo is not None:
-                print aliasInfo
                 stickerList = aliasInfo.get('list')
                 carouselColumnArray = []
                 for idx, stickerInfo in enumerate(stickerList):
-                    print stickerInfo
-
                     packageId = stickerInfo.get('packageId')
                     stickerId = stickerInfo.get('stickerId')
                     print 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png'
-
+                    print alias
+                    print str(idx)
+                    print '@stk.remove '+alias+ ' '+ packageId + ' ' + stickerId
                     carouselColumnArray.append(
                         CarouselColumn(
                             thumbnail_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
@@ -239,7 +232,7 @@ def callback():
                 )
             else:
                 print "그런거 없또"
-
+            return
         if command=='stk.add' and len(tokens) == 4:
             alias = tokens[1]
             packageId = tokens[2]
