@@ -194,16 +194,17 @@ def callback():
                 aliasInfo = { "list": stickerList }
             
             # save custom sticker in firebase. use patch and add last slash to remove unique number
-            firebase.post('/customSticker/' + alias + '/', aliasInfo)
+            firebase.patch('/customSticker/' + alias + '/', aliasInfo)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text='스티커가 ' + alias + '로 저장되어또!!!')
             )
         if command=='stk' and len(tokens) == 2:
             alias = tokens[1]
-            stickerList = firebase.get('/customSticker', alias)
+            aliasInfo = firebase.get('/customSticker', alias)
 
             # 랜덤하게 하나를 고른다
+            stickerList = aliasInfo.list
             stickerInfo = random.choice(stickerList)
 
             packageId = stickerInfo['packageId']
