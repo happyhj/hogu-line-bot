@@ -112,13 +112,13 @@ def callback():
 
         command = command[1:]
 
-        if command=='sticker' and len(tokens)==3:
+        if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
                 StickerSendMessage(package_id=tokens[1], sticker_id=tokens[2])
             )
             continue
-        if command=='stickerImg' and len(tokens)==3:
+        if command=='stk.img' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
@@ -144,7 +144,6 @@ def callback():
 
                 title = li.a.find(class_='mdCMN06Ttl').getText()
 
-                print 
                 carouselColumnArray.append(
                     CarouselColumn(
                         thumbnail_image_url=thumbnail_image_url,
@@ -166,7 +165,7 @@ def callback():
                     template=CarouselTemplate(columns=carouselColumnArray)
                 )
             )
-        if command=='스티커추가' and len(tokens) == 4:
+        if command=='stk.add' and len(tokens) == 4:
             alias = tokens[1]
             packageId = tokens[2]
             stickerId = tokens[3]
@@ -192,7 +191,7 @@ def callback():
                 event.reply_token,
                 TextSendMessage(text='스티커가 ' + alias + '로 저장되어또!!!')
             )
-        if command=='커스텀' and len(tokens) == 2:
+        if command=='stk' and len(tokens) == 2:
             alias = tokens[1]
             stickerList = firebase.get('/customSticker', alias)
 
