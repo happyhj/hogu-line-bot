@@ -195,6 +195,7 @@ def callback():
                     event.reply_token,
                     TextSendMessage(text='스티커가 ' + alias + '에서 지오져또..')
                 )
+        print tokens
         if command=='stk.list' and len(tokens) == 2:
             alias = tokens[1]
             # 해당하는 스티커 목록을 가져온다 
