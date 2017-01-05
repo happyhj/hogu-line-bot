@@ -174,7 +174,6 @@ def callback():
         
             # 기존 스티커 리스트를 가져와서 
             aliasInfo = firebase.get('/customSticker', alias)
-            stickerList = aliasInfo.get('list')
 
             # 리스트가 아니면 리스트로 만들어 준다
             if aliasInfo is None:
