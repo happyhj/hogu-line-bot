@@ -53,6 +53,8 @@ from linebot.models import (
 
 app = Flask(__name__)
 
+firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
+
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
@@ -68,7 +70,6 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
-firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -176,7 +177,7 @@ def callback():
             stickerList = firebase.get('/customSticker', alias)
 
             # 리스트가 아니면 리스트로 만들어 준다
-            if len(stickerList) < 1:
+            if stickerList is None:
                 stickerList = [ newStickerInfo ]
             else:
                 # 이미 있는 스티커면 무시
