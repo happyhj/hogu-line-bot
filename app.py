@@ -240,7 +240,7 @@ def callback():
                 print "그런거 없또"
             return
         if command=='stk.list' and len(tokens) == 1:
-            allStickerInfo = firebase.get('/customSticker', null)
+            allStickerInfo = firebase.get('/customSticker', None)
             aliasList = allStickerInfo.keys()
             line_bot_api.reply_message(
                 event.reply_token,
