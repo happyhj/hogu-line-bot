@@ -174,16 +174,21 @@ def callback():
         
             # 기존 스티커 리스트를 가져와서 
             stickerList = firebase.get('/customSticker', alias)
-            # 이미 있는 스티커면 무시
-            for stickerInfo in stickerList:
-                if stickerInfo.packageId==newStickerInfo.packageId and stickerInfo.stickerId==newStickerInfo.stickerId:
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage(text='이미 그렇게 등록되어있또')
-                    )                    
-                    return 'OK'
-            # 현재 없는 새로운 스티커라면 등록 
-            stickerList.append(newStickerInfo)
+
+            # 리스트가 아니면 리스트로 만들어 준다
+            if len(stickerList) < 1:
+                stickerList = [ newStickerInfo ]
+            else:
+                # 이미 있는 스티커면 무시
+                for stickerInfo in stickerList:
+                    if stickerInfo.packageId==newStickerInfo.packageId and stickerInfo.stickerId==newStickerInfo.stickerId:
+                        line_bot_api.reply_message(
+                            event.reply_token,
+                            TextSendMessage(text='이미 그렇게 등록되어있또')
+                        )                    
+                        return 'OK'
+                # 현재 없는 새로운 스티커라면 등록 
+                stickerList.append(newStickerInfo)
             
             # save custom sticker in firebase. use patch and add last slash to remove unique number
             firebase.patch('/customSticker/' + alias + '/', stickerList)
