@@ -200,10 +200,10 @@ def callback():
             # 해당하는 스티커 목록을 가져온다 
             aliasInfo = firebase.get('/customSticker', alias)
             stickerList = []
-            if idx, aliasInfo is not None:
+            if aliasInfo is not None:
                 stickerList = aliasInfo.get('list')
                 carouselColumnArray = []
-                for stickerInfo in stickerList:
+                for idx, stickerInfo in stickerList:
                     packageId = stickerInfo.get('packageId')
                     stickerId = stickerInfo.get('stickerId')
                     carouselColumnArray.append(
