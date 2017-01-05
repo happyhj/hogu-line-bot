@@ -113,6 +113,12 @@ def callback():
 
         command = command[1:]
 
+        if command=='돼지야' and len(tokens) == 1:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='불러또?')
+            )
+            continue
         if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
@@ -233,6 +239,14 @@ def callback():
             else:
                 print "그런거 없또"
             return
+        if command=='stk.list' and len(tokens) == 1:
+            allStickerInfo = firebase.get('/customSticker', None)
+            aliasList = allStickerInfo.keys()
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=', '.join(aliasList) + ' 가 이또!!')
+            )
+            continue
         if command=='stk.add' and len(tokens) == 4:
             alias = tokens[1]
             packageId = tokens[2]
