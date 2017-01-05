@@ -249,6 +249,12 @@ def callback():
                 aliasInfo = { "list": stickerList }
             else:
                 stickerList = aliasInfo.get('list')
+                if len(stickerList)>=5:
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='스티커는 5개 넘게 저장할 수 없또')
+                    )
+                    return 'OK'
                 # 이미 있는 스티커면 무시
                 for stickerInfo in stickerList:
                     if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
