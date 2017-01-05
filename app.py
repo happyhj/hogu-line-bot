@@ -170,7 +170,7 @@ def callback():
             packageId = tokens[2]
             stickerId = tokens[3]
 
-            stickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
+            newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
             targetIdx  = -1
             # 기존 스티커 리스트를 가져와서 
             aliasInfo = firebase.get('/customSticker', alias)
