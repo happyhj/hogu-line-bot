@@ -246,7 +246,7 @@ def callback():
                 event.reply_token,
                 TextSendMessage(text=', '.join(aliasList) + ' 가 이또!!')
             )
-            continue)
+            continue
         if command=='stk.add' and len(tokens) == 4:
             alias = tokens[1]
             packageId = tokens[2]
