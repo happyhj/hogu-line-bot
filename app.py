@@ -183,7 +183,7 @@ def callback():
                 stickerList = aliasInfo.get('list')
                 # 이미 있는 스티커면 무시
                 for stickerInfo in stickerList:
-                    if stickerInfo.packageId==newStickerInfo.packageId and stickerInfo.stickerId==newStickerInfo.stickerId:
+                    if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
                         line_bot_api.reply_message(
                             event.reply_token,
                             TextSendMessage(text='이미 그렇게 등록되어있또')
