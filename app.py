@@ -15,6 +15,7 @@
 from __future__ import unicode_literals
 from bs4 import BeautifulSoup
 from firebase import firebase
+import random
 
 import requests
 import json
@@ -52,6 +53,8 @@ from linebot.models import (
 
 app = Flask(__name__)
 
+firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)     
+
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
@@ -66,9 +69,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-
-firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
-
 
 
 def props(x):
@@ -91,7 +91,7 @@ def callback():
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         # log every event to firebase
-        eventDict = json.loads(str(event));
+        eventDict = json.loads(str(event))
         firebase.post('/events', eventDict)
         print eventDict
 
@@ -100,9 +100,7 @@ def callback():
 
         if event.message.type=='image':
             event.message.id
-
             continue
-
 
         if not isinstance(event.message, TextMessage):
             continue
@@ -115,13 +113,13 @@ def callback():
 
         command = command[1:]
 
-        if command=='sticker' and len(tokens)==3:
+        if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
                 StickerSendMessage(package_id=tokens[1], sticker_id=tokens[2])
             )
             continue
-        if command=='stickerImg' and len(tokens)==3:
+        if command=='stk.img' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
@@ -147,7 +145,6 @@ def callback():
 
                 title = li.a.find(class_='mdCMN06Ttl').getText()
 
-                print 
                 carouselColumnArray.append(
                     CarouselColumn(
                         thumbnail_image_url=thumbnail_image_url,
@@ -161,7 +158,6 @@ def callback():
                         ]
                     )
                 )
-            print carouselColumnArray
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(
@@ -169,11 +165,66 @@ def callback():
                     template=CarouselTemplate(columns=carouselColumnArray)
                 )
             )
+        if command=='stk.add' and len(tokens) == 4:
+            alias = tokens[1]
+            packageId = tokens[2]
+            stickerId = tokens[3]
+
+            newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
+        
+            # 기존 스티커 리스트를 가져와서 
+            aliasInfo = firebase.get('/customSticker', alias)
+
+            # 리스트가 아니면 리스트로 만들어 준다
+            if aliasInfo is None:
+                stickerList = [ newStickerInfo ]
+                aliasInfo = { "list": stickerList }
+            else:
+                stickerList = aliasInfo.get('list')
+                # 이미 있는 스티커면 무시
+                for stickerInfo in stickerList:
+                    if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
+                        line_bot_api.reply_message(
+                            event.reply_token,
+                            TextSendMessage(text='이미 그렇게 등록되어있또')
+                        )                    
+                        return 'OK'
+                # 현재 없는 새로운 스티커라면 등록 
+                stickerList.append(newStickerInfo)
+                aliasInfo = { "list": stickerList }
+
+            # save custom sticker in firebase. use patch and add last slash to remove unique number
+            firebase.patch('/customSticker/' + alias + '/', aliasInfo)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='스티커가 ' + alias + '로 저장되어또!!!')
+            )
+        if command=='stk' and len(tokens) == 2:
+            alias = tokens[1]
+            aliasInfo = firebase.get('/customSticker', alias)
+
+            if aliasInfo is not None:
+                # 랜덤하게 하나를 고른다
+                stickerList = aliasInfo.get('list')
+                stickerInfo = random.choice(stickerList)
+
+                packageId = stickerInfo['packageId']
+                stickerId = stickerInfo['stickerId']
+
+                # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    ImageSendMessage(
+                        original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
+                        preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png' 
+                    )
+                )
+                continue
         else:
             # 커맨드 분석 메시지 
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='커맨드 ' + command +', 인자 ' + param +' 을 입력 받았또!!!')
+                TextSendMessage(text='커맨드 ' + command +', 인자 [' + tokens[1] +'] 을 입력 받았또!!!')
             )
 
 
