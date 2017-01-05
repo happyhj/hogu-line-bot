@@ -178,7 +178,7 @@ def callback():
             if aliasInfo is not None:
                 stickerList = aliasInfo.get('list')
                 # 이미 있는 스티커면 인덱스 기록
-                for idx, stickerInfo in stickerList:
+                for idx, stickerInfo in enumerate(stickerList):
                     if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
                         targetIdx = idx
             else:
@@ -203,7 +203,7 @@ def callback():
             if aliasInfo is not None:
                 stickerList = aliasInfo.get('list')
                 carouselColumnArray = []
-                for idx, stickerInfo in stickerList:
+                for idx, stickerInfo in enumerate(stickerList):
                     packageId = stickerInfo.get('packageId')
                     stickerId = stickerInfo.get('stickerId')
                     carouselColumnArray.append(
