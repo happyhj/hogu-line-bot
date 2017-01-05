@@ -208,7 +208,7 @@ def callback():
                     stickerId = stickerInfo.get('stickerId')
                     carouselColumnArray.append(
                         CarouselColumn(
-                            thumbnail_image_url=thumbnail_image_url,
+                            thumbnail_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
                             title=alias,
                             text=str(idx),
                             actions=[
