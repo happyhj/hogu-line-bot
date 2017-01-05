@@ -192,6 +192,7 @@ def callback():
                 stickerList.append(newStickerInfo)
             
             # save custom sticker in firebase. use patch and add last slash to remove unique number
+            print stickerList
             firebase.patch('/customSticker/' + alias + '/', stickerList)
             line_bot_api.reply_message(
                 event.reply_token,
