@@ -53,7 +53,7 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)
+firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)     
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -158,7 +158,6 @@ def callback():
                         ]
                     )
                 )
-            print carouselColumnArray
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(
@@ -174,12 +173,14 @@ def callback():
             newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
         
             # 기존 스티커 리스트를 가져와서 
-            stickerList = firebase.get('/customSticker', alias)
+            aliasInfo = firebase.get('/customSticker', alias)
 
             # 리스트가 아니면 리스트로 만들어 준다
-            if stickerList is None:
+            if aliasInfo is None:
                 stickerList = [ newStickerInfo ]
+                aliasInfo = { "list": stickerList }
             else:
+                stickerList = aliasInfo.list
                 # 이미 있는 스티커면 무시
                 for stickerInfo in stickerList:
                     if stickerInfo.packageId==newStickerInfo.packageId and stickerInfo.stickerId==newStickerInfo.stickerId:
@@ -190,10 +191,10 @@ def callback():
                         return 'OK'
                 # 현재 없는 새로운 스티커라면 등록 
                 stickerList.append(newStickerInfo)
+                aliasInfo = { "list": stickerList }
             
             # save custom sticker in firebase. use patch and add last slash to remove unique number
-            print stickerList
-            firebase.patch('/customSticker/' + alias + '/', stickerList)
+            firebase.post('/customSticker/' + alias + '/', aliasInfo)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text='스티커가 ' + alias + '로 저장되어또!!!')
