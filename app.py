@@ -15,6 +15,7 @@
 from __future__ import unicode_literals
 from bs4 import BeautifulSoup
 from firebase import firebase
+import random
 
 import requests
 import json
@@ -166,24 +167,40 @@ def callback():
                 )
             )
         if command=='스티커추가' and len(tokens) == 4:
-            stickerInfo = {'packageId' : tokens[2], 'stickerId' : tokens[3]}
+            alias = tokens[1]
+            packageId = tokens[2]
+            stickerId = tokens[3]
+
+            newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
         
-            print stickerInfo
+            # 기존 스티커 리스트를 가져와서 
+            stickerList = firebase.get('/customSticker', alias)
+            # 이미 있는 스티커면 무시
+            for stickerInfo in stickerList:
+                if stickerInfo.packageId==newStickerInfo.packageId and stickerInfo.stickerId==newStickerInfo.stickerId:
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='이미 그렇게 등록되어있또')
+                    )                    
+                    return 'OK'
+            # 현재 없는 새로운 스티커라면 등록 
+            stickerList.append(newStickerInfo)
             
             # save custom sticker in firebase. use patch and add last slash to remove unique number
-            firebase.patch('/customSticker/' + tokens[1] + '/', stickerInfo)
+            firebase.patch('/customSticker/' + alias + '/', stickerList)
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='스티커가 ' + tokens[1] + '로 저장되어또!!!')
+                TextSendMessage(text='스티커가 ' + alias + '로 저장되어또!!!')
             )
         if command=='커스텀' and len(tokens) == 2:
-            query = tokens[1]
-            result = firebase.get('/customSticker', query)
+            alias = tokens[1]
+            stickerList = firebase.get('/customSticker', alias)
 
-            print result
+            # 랜덤하게 하나를 고른다
+            stickerInfo = random.choice(stickerList)
 
-            packageId = result['packageId']
-            stickerId = result['stickerId']
+            packageId = stickerInfo['packageId']
+            stickerId = stickerInfo['stickerId']
 
             # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
             line_bot_api.reply_message(
