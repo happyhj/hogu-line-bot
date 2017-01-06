@@ -89,8 +89,8 @@ def answerPig():
     print "answerPig is here"
     answerTextMessage('불러또?')
 
-def act(command) :
-    actDispatcher[command]
+def act(command):
+    actDispatcher[command]()
 
 actDispatcher = {
     '돼지야' : answerPig
