@@ -92,7 +92,7 @@ def answerPig():
 
 def initActDelegateDictionary():
     dic = {
-        '돼지야' : {act : answerPig}
+        '돼지야' : answerPig
     }
     return dic
     
@@ -136,7 +136,7 @@ def callback():
 
         command = command[1:]
         actDelegateMap = initActDelegateDictionary()
-        actDelegateMap[command].act()
+        actDelegateMap[command]()
         continue;
 
         if command=='stk.call' and len(tokens)==3:
