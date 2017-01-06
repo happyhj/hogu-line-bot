@@ -85,13 +85,11 @@ def answerTextMessage(message, event):
         TextSendMessage(text=message)
     )
 
-def answerPig():
-    print "answerPig is here"
-    answerTextMessage('불러또?')
+def answerPig(event):
+    answerTextMessage('불러또?', event)
 
-def act(command, event):
-    print "act comming"
-    actDispatcher[command, event]()
+def actEvent(command, event):
+    actDispatcher[command](event)
 
 actDispatcher = {
     '돼지야' : answerPig
@@ -135,7 +133,7 @@ def callback():
             continue
 
         command = command[1:]
-        act(command, event)
+        actEvent(command, event)
 
         if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
