@@ -87,6 +87,7 @@ def answerTextMessage(message):
     )
 
 def answerPig():
+    print "answerPig is here"
     answerTextMessage('불러또?')
 
 def initActDelegateDictionary():
