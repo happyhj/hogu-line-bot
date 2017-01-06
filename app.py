@@ -79,7 +79,7 @@ def isValidRequestCommand(command):
 
     return True
 
-def answerTextMessage(message):
+def answerTextMessage(message, event):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=message)
@@ -89,9 +89,9 @@ def answerPig():
     print "answerPig is here"
     answerTextMessage('불러또?')
 
-def act(command):
+def act(command, event):
     print "act comming"
-    actDispatcher[command]()
+    actDispatcher[command, event]()
 
 actDispatcher = {
     '돼지야' : answerPig
@@ -133,9 +133,9 @@ def callback():
 
         if(not isValidRequestCommand(command)):
             continue
-        print "valid request"
+
         command = command[1:]
-        act(command)
+        act(command, event)
 
         if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
