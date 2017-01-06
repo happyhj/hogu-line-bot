@@ -69,9 +69,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-actDispatcher = {
-    '돼지야' : answerPig
-}
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -94,6 +91,10 @@ def answerPig():
 
 def act(command) :
     actDispatcher[command]
+
+actDispatcher = {
+    '돼지야' : answerPig
+}
 
 @app.route("/callback", methods=['POST'])
 def callback():
