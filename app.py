@@ -76,9 +76,9 @@ def props(x):
 
 def isValidRequestCommand(command):
     if(command[0] != '@'):
-        return false
+        return False
 
-    return true
+    return True
 
 def answerTextMessage(message):
     line_bot_api.reply_message(
