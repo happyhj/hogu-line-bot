@@ -90,6 +90,7 @@ def answerPig():
     answerTextMessage('불러또?')
 
 def act(command):
+    print "act comming"
     actDispatcher[command]()
 
 actDispatcher = {
@@ -130,9 +131,9 @@ def callback():
         tokens = event.message.text.split()
         command = tokens[0]
 
-        if(isValidRequestCommand(command)):
+        if(not isValidRequestCommand(command)):
             continue
-
+        print "valid request"
         command = command[1:]
         act(command)
 
