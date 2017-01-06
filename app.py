@@ -74,6 +74,28 @@ parser = WebhookParser(channel_secret)
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
 
+def isValidRequestCommand(command):
+    if(command[0] != '@'):
+        return false
+
+    return true
+
+def answerTextMessage(message):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=message)
+    )
+
+def answerPig():
+    answerTextMessage('불러또?')
+
+def initActDelegateDictionary():
+    dic = {
+        '돼지야' : {act : answerPig}
+    }
+    return dic
+    
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -108,17 +130,14 @@ def callback():
         tokens = event.message.text.split()
         command = tokens[0]
 
-        if command[0] != '@':
+        if(isValidRequestCommand(command)):
             continue
 
         command = command[1:]
+        actDelegateMap = initActDelegateDictionary()
+        actDelegateMap[command].act()
+        continue;
 
-        if command=='돼지야' and len(tokens) == 1:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text='불러또?')
-            )
-            continue
         if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
