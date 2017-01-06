@@ -79,20 +79,27 @@ def isValidRequestCommand(command):
 
     return True
 
-def answerTextMessage(message, event):
+def answerTextMessage(**param):
     line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=message)
+        param['event'].reply_token,
+        TextSendMessage(text=param['message'])
     )
 
-def answerPig(event):
-    answerTextMessage('불러또?', event)
+def answerStickerMessage(**param):
+    line_bot_api.reply_message(
+        param['event'].reply_token,
+        StickerSendMessage(package_id=param['tokens'][0], sticker_id=param['tokens'][1])
+    )
 
-def actEvent(command, event):
-    actDispatcher[command](event)
+def answerPig(**param):
+    answerTextMessage('불러또?', param)
+
+def actEvent(command, **param):
+    actDispatcher[command](param)
 
 actDispatcher = {
-    '돼지야' : answerPig
+    '돼지야' : answerPig,
+    'stk.call' : answerStickerMessage,
 }
 
 @app.route("/callback", methods=['POST'])
@@ -133,9 +140,9 @@ def callback():
             continue
 
         command = command[1:]
-        actEvent(command, event)
+        actEvent(command, event=event, tokens=tokens[1:])
 
-        if command=='stk.call' and len(tokens)==3:
+        if command=='' and len(tokens)==3:
             line_bot_api.reply_message(
                 event.reply_token,
                 StickerSendMessage(package_id=tokens[1], sticker_id=tokens[2])
