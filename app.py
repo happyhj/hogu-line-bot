@@ -69,7 +69,9 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-
+actDispatcher = {
+    '돼지야' : answerPig
+}
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -90,12 +92,8 @@ def answerPig():
     print "answerPig is here"
     answerTextMessage('불러또?')
 
-def initActDelegateDictionary():
-    dic = {
-        '돼지야' : answerPig
-    }
-    return dic
-    
+def act(command) :
+    actDispatcher[command]
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -135,9 +133,7 @@ def callback():
             continue
 
         command = command[1:]
-        actDelegateMap = initActDelegateDictionary()
-        actDelegateMap[command]()
-        continue;
+        act(command)
 
         if command=='stk.call' and len(tokens)==3:
             line_bot_api.reply_message(
