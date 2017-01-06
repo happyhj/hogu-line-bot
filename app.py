@@ -79,10 +79,10 @@ def isValidRequestCommand(command):
 
     return True
 
-def answerTextMessage(**param):
+def answerTextMessage(message, event):
     line_bot_api.reply_message(
-        param['event'].reply_token,
-        TextSendMessage(text=param['message'])
+        event.reply_token,
+        TextSendMessage(text=message)
     )
 
 def answerStickerMessage(**param):
@@ -92,7 +92,8 @@ def answerStickerMessage(**param):
     )
 
 def answerPig(**param):
-    answerTextMessage('불러또?', param)
+    event = param['event']
+    answerTextMessage('불러또?', event)
 
 def actEvent(command, **param):
     actDispatcher[command](param)
