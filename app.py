@@ -278,21 +278,20 @@ def answerStickAdd(**param):
     newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
         
     # 기존 스티커 리스트를 가져와서 
-    aliasInfo = firebase.get('/customSticker', alias)
-
-    # 리스트가 아니면 리스트로 만들어 준다
+    aliasInfo = firebase.get('/customSticker', alias)    
+    stickerList = aliasInfo.get('list')
+    
+    # 이전에 저장된 값이 없다면 리스트로 만들어 초기화
     if aliasInfo is None:
         stickerList = [ newStickerInfo ]
         aliasInfo = { "list": stickerList }
-    
-    stickerList = aliasInfo.get('list')
-    
-    if not validateStickAdd(stickerList, newStickerInfo, event):
-        return
+    else:
+        if not validateStickAdd(stickerList, newStickerInfo, event):
+            return
 
-    # 현재 없는 새로운 스티커라면 등록 
-    stickerList.append(newStickerInfo)
-    aliasInfo = { "list": stickerList }
+        # 현재 없는 새로운 스티커라면 등록 
+        stickerList.append(newStickerInfo)
+        aliasInfo = { "list": stickerList }
 
     # save custom sticker in firebase. use patch and add last slash to remove unique number
     firebase.patch('/customSticker/' + alias + '/', aliasInfo)
