@@ -204,7 +204,7 @@ def answerStickerRemoveCarousel(**param):
     firebase.patch('/customSticker/' + alias + '/', aliasInfo)
     printTextMessage(event, '스티커가 ' + alias + '에서 지오져또..')
 
-def buildSavedStickerInfoCarousel(aliasInfo):
+def buildSavedStickerInfoCarousel(aliasInfo, alias):
     stickerList = aliasInfo.get('list')
     carouselColumnArray = []
     for idx, stickerInfo in enumerate(stickerList):
@@ -247,7 +247,7 @@ def answerStickerList(**param):
             printTextMessage(event, '그런거 없또')
             return
         
-        carouselColumnArray = buildSavedStickerInfoCarousel(aliasInfo)
+        carouselColumnArray = buildSavedStickerInfoCarousel(aliasInfo, alias)
         printStickerCarousel(event, 'PC에서는 볼수없또', carouselColumnArray)               
 
     return
