@@ -14,14 +14,12 @@
 
 from __future__ import unicode_literals
 from bs4 import BeautifulSoup
-from firebase import firebase
 import random
 
 import requests
 import json
 import os
 import sys
-import hogu_bot_service
 
 from argparse import ArgumentParser
 
@@ -53,9 +51,20 @@ from linebot.models import (
     URITemplateAction,
 )
 
-app = Flask(__name__)
+from hogu_bot_service import (
+    answerPig,
+    answerStickerMessgae,
+    answerStickerImage,
+    answerStickerWithCarousel,
+    answerStickerRemoveCarousel,
+    answerStickerList,
+    answerStickAdd,
+    answerSticker,
+    logEvent,
+    isValidRequestCommand
+)
 
-firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)     
+app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -79,14 +88,14 @@ def actEvent(command, **param):
     actDispatcher[command](**param)
 
 actDispatcher = {
-    '돼지야' : hogu_bot_service.answerPig,
-    'stk.call' : hogu_bot_service.answerStickerMessgae,
-    'stk.img' : hogu_bot_service.answerStickerImage,
-    '스티커' : hogu_bot_service.answerStickerWithCarousel,
-    'stk.remove' : hogu_bot_service.answerStickerRemoveCarousel,
-    'stk.list' : hogu_bot_service.answerStickerList,
-    'stk.add' : hogu_bot_service.answerStickAdd,
-    'stk' : hogu_bot_service.answerSticker
+    '돼지야' : answerPig,
+    'stk.call' : answerStickerMessgae,
+    'stk.img' : answerStickerImage,
+    '스티커' : answerStickerWithCarousel,
+    'stk.remove' : answerStickerRemoveCarousel,
+    'stk.list' : answerStickerList,
+    'stk.add' : answerStickAdd,
+    'stk' : answerSticker
 }
 
 @app.route("/callback", methods=['POST'])
@@ -106,7 +115,7 @@ def callback():
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         # log every event to firebase
-        hogu_bot_service.logEvent(event)
+        logEvent(event)
         
         if not isinstance(event, MessageEvent):
             continue
@@ -121,7 +130,7 @@ def callback():
         tokens = event.message.text.split()
         command = tokens[0]
 
-        if not hogu_bot_service.isValidRequestCommand(command):
+        if not isValidRequestCommand(command):
             continue
 
         command = command[1:]
