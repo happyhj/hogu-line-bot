@@ -287,7 +287,7 @@ def answerStickAdd(**param):
     
     stickerList = aliasInfo.get('list')
     
-    if not validateStickAdd(stickerList, newStickerInfo):
+    if not validateStickAdd(stickerList, newStickerInfo, event):
         return
 
     # 현재 없는 새로운 스티커라면 등록 
