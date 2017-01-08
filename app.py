@@ -134,7 +134,7 @@ def parseHtml():
     l = bs.find_all("li", class_="mdCMN12Li")
     return l
 
-def hasStickerInfo(aliasInfo):
+def hasStickerInfo(aliasInfo, newStickerInfo):
     targetIdx  = -1
 
     if aliasInfo is not None:
@@ -191,7 +191,7 @@ def answerStickerRemoveCarousel(**param):
 
     # 기존 스티커 리스트를 가져와서 
     aliasInfo = firebase.get('/customSticker', alias)
-    targetIdx = hasStickerInfo(aliasInfo)
+    targetIdx = hasStickerInfo(aliasInfo, newStickerInfo)
 
     # targetIdx 가 -1 이면 리턴(삭제할 대상이 없음)
     if targetIdx == -1:
