@@ -79,28 +79,249 @@ def isValidRequestCommand(command):
 
     return True
 
-def answerTextMessage(message, event):
+def printTextMessage(event, message):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=message)
     )
 
-def answerStickerMessage(**param):
+def printStickerMessage(event, packageId, stickerId):
     line_bot_api.reply_message(
-        param['event'].reply_token,
-        StickerSendMessage(package_id=param['tokens'][0], sticker_id=param['tokens'][1])
+        event.reply_token,
+        StickerSendMessage(package_id=packageId, sticker_id=stickerId)
+    )
+
+def printStickerImage(event, packageId, stickerId):
+    line_bot_api.reply_message(
+        event.reply_token,
+        ImageSendMessage(
+            original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
+            preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png'
+        )
+    )
+
+def answerStickerMessgae(**param):
+    event = param['event']
+    packageId = param['tokens'][0]
+    stickerID = param['tokens'][1]
+    printStickerMessage(event, packageId, stickerId)
+
+def answerStickerImage(**param):
+    event = param['event']
+    packageId = param['tokens'][0]
+    stickerID = param['tokens'][1]
+    printStickerImage(event, packageId, stickerId)
+
+def printStickerCarousel(event, altText, carouselColumnArray):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TemplateSendMessage(
+            alt_text=altText,
+            template=CarouselTemplate(columns=carouselColumnArray)
+        )
     )
 
 def answerPig(**param):
     event = param['event']
-    answerTextMessage('불러또?', event)
+    printTextMessage(event, '불러또?')
 
 def actEvent(command, **param):
     actDispatcher[command](**param)
 
+def parseHtml():
+    r = requests.get("https://store.line.me/stickershop/home/user/ko")
+    bs = BeautifulSoup(r.content, 'html.parser')
+    l = bs.find_all("li", class_="mdCMN12Li")
+    return l
+
+def hasStickerInfo(aliasInfo):
+    targetIdx  = -1
+
+    if aliasInfo is not None:
+        stickerList = aliasInfo.get('list')
+        # 이미 있는 스티커면 인덱스 기록
+        for idx, stickerInfo in enumerate(stickerList):
+            if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
+                targetIdx = idx
+    
+    return targetIdx
+
+def buildCarouselList(liList):
+    carouselColumnArray = []
+
+    for li in liList:
+        if len(carouselColumnArray)==5:
+            continue
+        href = 'https://store.line.me' + li.a.get('href')
+        packageId = li.a.find(class_='mdCMN06Img').img.get('src').split('product/')[1].split('/ANDROID')[0]
+
+        thumbnail_image_url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/iphone/main@2x.png'
+
+        title = li.a.find(class_='mdCMN06Ttl').getText()
+
+        carouselColumnArray.append(
+            CarouselColumn(
+                thumbnail_image_url=thumbnail_image_url,
+                title=title,
+                text='살려줘',
+                actions=[
+                    URITemplateAction(
+                        label='보기',
+                        uri=href
+                    )
+                ]
+            )
+        )
+    return carouselColumnArray
+
+def answerStickerWithCarousel(**param):
+    event = param['event']
+    liList = parseHtml()
+    carouselColumnArray = buildCarouselList(liList)
+    printStickerCarousel(event, 'PC에서는 볼수없또', carouselColumnArray)
+
+def answerStickerRemoveCarousel(**param):
+    event = param['event']
+    tokens = param['tokens']
+    alias = tokens[0]
+    packageId = tokens[1]
+    stickerId = tokens[2]
+
+    newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
+    
+
+    # 기존 스티커 리스트를 가져와서 
+    aliasInfo = firebase.get('/customSticker', alias)
+    targetIdx = hasStickerInfo(aliasInfo)
+
+    # targetIdx 가 -1 이면 리턴(삭제할 대상이 없음)
+    if targetIdx == -1:
+        return
+
+    stickerList.pop(targetIdx)
+    aliasInfo = { "list": stickerList }
+
+    # save custom sticker in firebase. use patch and add last slash to remove unique number
+    firebase.patch('/customSticker/' + alias + '/', aliasInfo)
+    printTextMessage(event, '스티커가 ' + alias + '에서 지오져또..')
+
+def buildSavedStickerInfoCarousel(aliasInfo):
+    stickerList = aliasInfo.get('list')
+    carouselColumnArray = []
+    for idx, stickerInfo in enumerate(stickerList):
+        packageId = stickerInfo.get('packageId')
+        stickerId = stickerInfo.get('stickerId')
+        # print 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png'
+        # print alias
+        # print str(idx)
+        # print '@stk.remove '+alias+ ' '+ packageId + ' ' + stickerId
+        carouselColumnArray.append(
+            CarouselColumn(
+                thumbnail_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
+                title=alias,
+                text=str(idx),
+                actions=[
+                    MessageTemplateAction(
+                        label='지우기',
+                        text='@stk.remove '+alias+ ' '+ packageId + ' ' + stickerId
+                    )
+                ]
+            )
+        )
+    return carouselColumnArray
+
+def answerStickerList(**param):
+    event = param['event']
+    tokens = param['tokens']
+
+    if len(tokens) == 1 :
+        allStickerInfo = firebase.get('/customSticker', None)
+        aliasList = allStickerInfo.keys()
+        printTextMessage(event, ', '.join(aliasList) + ' 가 이또!!')
+
+    if len(tokens) == 2 :
+        alias = tokens[0]
+        # 해당하는 스티커 목록을 가져온다 
+        aliasInfo = firebase.get('/customSticker', alias)
+
+        if aliasInfo is None:
+            printTextMessage(event, '그런거 없또')
+            return
+        
+        carouselColumnArray = buildSavedStickerInfoCarousel(aliasInfo)
+        printStickerCarousel(event, 'PC에서는 볼수없또', carouselColumnArray)               
+
+    return
+
+def validateStickAdd(stickerList, newStickerInfo):
+    # 하나의 키워드마다 스티커 저장 개수 벨리데이션
+    if len(stickerList)>=5 :
+        printTextMessage(event, '스티커는 5개 넘게 저장할 수 없또')
+        return False
+
+    # 이미 있는 스티커면 무시
+    for stickerInfo in stickerList:
+        if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
+            printTextMessage(event, '이미 그렇게 등록되어있또')
+            return False
+        
+    return True
+
+def answerStickAdd(**param):
+    event = param['event']
+    alias = tokens[0]
+    packageId = tokens[1]
+    stickerId = tokens[2]
+
+    newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
+        
+    # 기존 스티커 리스트를 가져와서 
+    aliasInfo = firebase.get('/customSticker', alias)
+
+    # 리스트가 아니면 리스트로 만들어 준다
+    if aliasInfo is None:
+        stickerList = [ newStickerInfo ]
+        aliasInfo = { "list": stickerList }
+    
+    stickerList = aliasInfo.get('list')
+    
+    if not validateStickAdd(stickerList, newStickerInfo):
+        return
+
+    # 현재 없는 새로운 스티커라면 등록 
+    stickerList.append(newStickerInfo)
+    aliasInfo = { "list": stickerList }
+
+    # save custom sticker in firebase. use patch and add last slash to remove unique number
+    firebase.patch('/customSticker/' + alias + '/', aliasInfo)
+    printTextMessage(event, '스티커가 ' + alias + '로 저장되어또!!!')
+
+def answerSticker():
+    alias = tokens[0]
+    aliasInfo = firebase.get('/customSticker', alias)
+
+    if aliasInfo is None:
+        return
+
+    # 랜덤하게 하나를 고른다
+    stickerList = aliasInfo.get('list')
+    stickerInfo = random.choice(stickerList)
+
+    packageId = stickerInfo['packageId']
+    stickerId = stickerInfo['stickerId']
+
+    # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
+    printStickerImage(event, packageId, stickerId)
+    
 actDispatcher = {
     '돼지야' : answerPig,
-    'stk.call' : answerStickerMessage,
+    'stk.call' : answerStickerMessgae,
+    'stk.img' : answerStickerImage,
+    '스티커' : answerStickerWithCarousel,
+    'stk.remove' : answerStickerRemoveCarousel,
+    'stk.list' : answerStickerList,
+    'stk.add' : answerStickAdd,
+    'stk' : answerSticker
 }
 
 @app.route("/callback", methods=['POST'])
@@ -142,203 +363,7 @@ def callback():
 
         command = command[1:]
         actEvent(command, event=event, tokens=tokens[1:])
-
-        if command=='' and len(tokens)==3:
-            line_bot_api.reply_message(
-                event.reply_token,
-                StickerSendMessage(package_id=tokens[1], sticker_id=tokens[2])
-            )
-            continue
-        if command=='stk.img' and len(tokens)==3:
-            line_bot_api.reply_message(
-                event.reply_token,
-                ImageSendMessage(
-                    original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+tokens[1]+'/android/stickers/'+tokens[2]+'.png',
-                    preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+tokens[1]+'/android/stickers/'+tokens[2]+'.png'
-                )
-            )
-            continue
-
-        if command=='스티커' and len(tokens)==1:
-            r = requests.get("https://store.line.me/stickershop/home/user/ko")
-            bs = BeautifulSoup(r.content, 'html.parser')
-            l = bs.find_all("li", class_="mdCMN12Li")
-            carouselColumnArray = []
-
-            for li in l:
-                if len(carouselColumnArray)==5:
-                    continue
-                href = 'https://store.line.me' + li.a.get('href')
-                packageId = li.a.find(class_='mdCMN06Img').img.get('src').split('product/')[1].split('/ANDROID')[0]
-
-                thumbnail_image_url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/iphone/main@2x.png'
-
-                title = li.a.find(class_='mdCMN06Ttl').getText()
-
-                carouselColumnArray.append(
-                    CarouselColumn(
-                        thumbnail_image_url=thumbnail_image_url,
-                        title=title,
-                        text='살려줘',
-                        actions=[
-                            URITemplateAction(
-                                label='보기',
-                                uri=href
-                            )
-                        ]
-                    )
-                )
-            line_bot_api.reply_message(
-                event.reply_token,
-                TemplateSendMessage(
-                    alt_text='PC에서는 볼수없또',
-                    template=CarouselTemplate(columns=carouselColumnArray)
-                )
-            )
-        if command=='stk.remove' and len(tokens) == 4:
-            alias = tokens[1]
-            packageId = tokens[2]
-            stickerId = tokens[3]
-
-            newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
-            targetIdx  = -1
-            # 기존 스티커 리스트를 가져와서 
-            aliasInfo = firebase.get('/customSticker', alias)
-
-            if aliasInfo is not None:
-                stickerList = aliasInfo.get('list')
-                # 이미 있는 스티커면 인덱스 기록
-                for idx, stickerInfo in enumerate(stickerList):
-                    if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
-                        targetIdx = idx
-            else:
-                return
-
-            # targetIdx 가 -1 이 아니면 stickerList 에서 해당 스티커 삭제 
-            if targetIdx!=-1:
-                stickerList.pop(targetIdx)
-                aliasInfo = { "list": stickerList }
-
-                # save custom sticker in firebase. use patch and add last slash to remove unique number
-                firebase.patch('/customSticker/' + alias + '/', aliasInfo)
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text='스티커가 ' + alias + '에서 지오져또..')
-                )
-        if command=='stk.list' and len(tokens) == 2:
-            alias = tokens[1]
-            # 해당하는 스티커 목록을 가져온다 
-            aliasInfo = firebase.get('/customSticker', alias)
-            stickerList = []
-            if aliasInfo is not None:
-                stickerList = aliasInfo.get('list')
-                carouselColumnArray = []
-                for idx, stickerInfo in enumerate(stickerList):
-                    packageId = stickerInfo.get('packageId')
-                    stickerId = stickerInfo.get('stickerId')
-                    # print 'https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png'
-                    # print alias
-                    # print str(idx)
-                    # print '@stk.remove '+alias+ ' '+ packageId + ' ' + stickerId
-                    carouselColumnArray.append(
-                        CarouselColumn(
-                            thumbnail_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
-                            title=alias,
-                            text=str(idx),
-                            actions=[
-                                MessageTemplateAction(
-                                    label='지우기',
-                                    text='@stk.remove '+alias+ ' '+ packageId + ' ' + stickerId
-                                )
-                            ]
-                        )
-                    )
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TemplateSendMessage(
-                        alt_text='PC에서는 볼수없또',
-                        template=CarouselTemplate(columns=carouselColumnArray)
-                    )
-                )
-            else:
-                print "그런거 없또"
-            return
-        if command=='stk.list' and len(tokens) == 1:
-            allStickerInfo = firebase.get('/customSticker', None)
-            aliasList = allStickerInfo.keys()
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=', '.join(aliasList) + ' 가 이또!!')
-            )
-            continue
-        if command=='stk.add' and len(tokens) == 4:
-            alias = tokens[1]
-            packageId = tokens[2]
-            stickerId = tokens[3]
-
-            newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
-        
-            # 기존 스티커 리스트를 가져와서 
-            aliasInfo = firebase.get('/customSticker', alias)
-
-            # 리스트가 아니면 리스트로 만들어 준다
-            if aliasInfo is None:
-                stickerList = [ newStickerInfo ]
-                aliasInfo = { "list": stickerList }
-            else:
-                stickerList = aliasInfo.get('list')
-                if len(stickerList)>=5:
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage(text='스티커는 5개 넘게 저장할 수 없또')
-                    )
-                    return 'OK'
-                # 이미 있는 스티커면 무시
-                for stickerInfo in stickerList:
-                    if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
-                        line_bot_api.reply_message(
-                            event.reply_token,
-                            TextSendMessage(text='이미 그렇게 등록되어있또')
-                        )                    
-                        return 'OK'
-                # 현재 없는 새로운 스티커라면 등록 
-                stickerList.append(newStickerInfo)
-                aliasInfo = { "list": stickerList }
-
-            # save custom sticker in firebase. use patch and add last slash to remove unique number
-            firebase.patch('/customSticker/' + alias + '/', aliasInfo)
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text='스티커가 ' + alias + '로 저장되어또!!!')
-            )
-        if command=='stk' and len(tokens) == 2:
-            alias = tokens[1]
-            aliasInfo = firebase.get('/customSticker', alias)
-
-            if aliasInfo is not None:
-                # 랜덤하게 하나를 고른다
-                stickerList = aliasInfo.get('list')
-                stickerInfo = random.choice(stickerList)
-
-                packageId = stickerInfo['packageId']
-                stickerId = stickerInfo['stickerId']
-
-                # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    ImageSendMessage(
-                        original_content_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png',
-                        preview_image_url='https://sdl-stickershop.line.naver.jp/products/0/0/1/'+packageId+'/android/stickers/'+stickerId+'.png' 
-                    )
-                )
-                continue
-        else:
-            # 커맨드 분석 메시지 
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text='커맨드 ' + command +', 인자 [' + tokens[1] +'] 을 입력 받았또!!!')
-            )
-
+        continue
 
     return 'OK'
 
