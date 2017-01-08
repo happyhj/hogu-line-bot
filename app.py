@@ -96,8 +96,7 @@ def answerPig(**param):
     answerTextMessage('불러또?', event)
 
 def actEvent(command, **param):
-    print param
-    actDispatcher[command](param)
+    actDispatcher[command](**param)
 
 actDispatcher = {
     '돼지야' : answerPig,
