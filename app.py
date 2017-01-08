@@ -103,13 +103,13 @@ def printStickerImage(event, packageId, stickerId):
 def answerStickerMessgae(**param):
     event = param['event']
     packageId = param['tokens'][0]
-    stickerID = param['tokens'][1]
+    stickerId = param['tokens'][1]
     printStickerMessage(event, packageId, stickerId)
 
 def answerStickerImage(**param):
     event = param['event']
     packageId = param['tokens'][0]
-    stickerID = param['tokens'][1]
+    stickerId = param['tokens'][1]
     printStickerImage(event, packageId, stickerId)
 
 def printStickerCarousel(event, altText, carouselColumnArray):
@@ -188,7 +188,6 @@ def answerStickerRemoveCarousel(**param):
     stickerId = tokens[2]
 
     newStickerInfo = {'packageId' : packageId, 'stickerId' :stickerId}
-    
 
     # 기존 스티커 리스트를 가져와서 
     aliasInfo = firebase.get('/customSticker', alias)
