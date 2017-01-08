@@ -270,6 +270,7 @@ def validateStickAdd(stickerList, newStickerInfo):
 
 def answerStickAdd(**param):
     event = param['event']
+    tokens = param['tokens']
     alias = tokens[0]
     packageId = tokens[1]
     stickerId = tokens[2]
@@ -297,7 +298,9 @@ def answerStickAdd(**param):
     firebase.patch('/customSticker/' + alias + '/', aliasInfo)
     printTextMessage(event, '스티커가 ' + alias + '로 저장되어또!!!')
 
-def answerSticker():
+def answerSticker(**param):
+    event = param['event']
+    tokens = param['tokens']
     alias = tokens[0]
     aliasInfo = firebase.get('/customSticker', alias)
 
