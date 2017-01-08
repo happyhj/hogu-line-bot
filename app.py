@@ -104,6 +104,9 @@ def answerStickerMessgae(**param):
     event = param['event']
     packageId = param['tokens'][0]
     stickerId = param['tokens'][1]
+    print event
+    print packageId
+    print stickerId
     printStickerMessage(event, packageId, stickerId)
 
 def answerStickerImage(**param):
