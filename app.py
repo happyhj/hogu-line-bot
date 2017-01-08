@@ -104,9 +104,6 @@ def answerStickerMessgae(**param):
     event = param['event']
     packageId = param['tokens'][0]
     stickerId = param['tokens'][1]
-    print event
-    print packageId
-    print stickerId
     printStickerMessage(event, packageId, stickerId)
 
 def answerStickerImage(**param):
@@ -236,12 +233,12 @@ def answerStickerList(**param):
     event = param['event']
     tokens = param['tokens']
 
-    if len(tokens) == 1 :
+    if len(tokens) == 0 :
         allStickerInfo = firebase.get('/customSticker', None)
         aliasList = allStickerInfo.keys()
         printTextMessage(event, ', '.join(aliasList) + ' 가 이또!!')
 
-    if len(tokens) == 2 :
+    if len(tokens) == 1 :
         alias = tokens[0]
         # 해당하는 스티커 목록을 가져온다 
         aliasInfo = firebase.get('/customSticker', alias)
