@@ -136,9 +136,9 @@ def parseHtml():
 
 def hasStickerInfo(aliasInfo, newStickerInfo):
     targetIdx  = -1
+    stickerList = aliasInfo.get('list')
 
     if aliasInfo is not None:
-        stickerList = aliasInfo.get('list')
         # 이미 있는 스티커면 인덱스 기록
         for idx, stickerInfo in enumerate(stickerList):
             if stickerInfo.get('packageId')==newStickerInfo.get('packageId') and stickerInfo.get('stickerId')==newStickerInfo.get('stickerId'):
@@ -191,10 +191,12 @@ def answerStickerRemoveCarousel(**param):
 
     # 기존 스티커 리스트를 가져와서 
     aliasInfo = firebase.get('/customSticker', alias)
+    stickerList = aliasInfo.get('list')
     targetIdx = hasStickerInfo(aliasInfo, newStickerInfo)
 
     # targetIdx 가 -1 이면 리턴(삭제할 대상이 없음)
     if targetIdx == -1:
+        printTextMessage(event, '지울 게 없또!')
         return
 
     stickerList.pop(targetIdx)
