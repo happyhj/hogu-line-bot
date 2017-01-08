@@ -254,7 +254,7 @@ def answerStickerList(**param):
 
     return
 
-def validateStickAdd(stickerList, newStickerInfo):
+def validateStickAdd(stickerList, newStickerInfo, event):
     # 하나의 키워드마다 스티커 저장 개수 벨리데이션
     if len(stickerList)>=5 :
         printTextMessage(event, '스티커는 5개 넘게 저장할 수 없또')
