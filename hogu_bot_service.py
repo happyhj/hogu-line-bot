@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import line_message_sender
 from firebase import firebase
 
-firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)     
+firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None) 
 
 def isValidRequestCommand(command):
     if(command[0] != '@'):
@@ -214,3 +214,8 @@ def answerSticker(**param):
 
     # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
     line_message_sender.printStickerImage(event, packageId, stickerId)
+
+def logEvent(event):
+    eventDict = json.loads(str(event))
+    firebase.post('/events', eventDict)
+    # print eventDict

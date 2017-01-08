@@ -106,10 +106,8 @@ def callback():
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         # log every event to firebase
-        eventDict = json.loads(str(event))
-        firebase.post('/events', eventDict)
-        print eventDict
-
+        hogu_bot_service.logEvent(event)
+        
         if not isinstance(event, MessageEvent):
             continue
 
