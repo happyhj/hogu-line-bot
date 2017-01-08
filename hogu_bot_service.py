@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import line_message_sender
 from firebase import firebase
 
