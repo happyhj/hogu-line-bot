@@ -73,6 +73,7 @@ parser = WebhookParser(channel_secret)
 # serve static file 
 @app.route('/')
 def root():
+    print "root request aquired!!!!!"
     return app.send_static_file('index.html')
 
 @app.route('/js/<path:path>')
