@@ -58,6 +58,7 @@ firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+
 port = os.getenv('PORT', None);
 
 if channel_secret is None:
@@ -370,10 +371,16 @@ def callback():
 
     return 'OK'
 
+# serve static file
+@app.route('/')
+def root():
+  return app.send_static_file('index.html')
+
 @app.route('/<path:path>')
-def static_file(path):
-    return app.send_static_file(path)
-    
+def static_proxy(path):
+  return app.send_static_file(path)
+
+
 if __name__ == "__main__":
     arg_parser = ArgumentParser(
         usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
