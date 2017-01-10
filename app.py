@@ -23,7 +23,7 @@ import os
 import sys
 from argparse import ArgumentParser
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, send_from_directory
 from linebot import (
     LineBotApi, WebhookParser
 )
@@ -78,15 +78,15 @@ def root():
 
 @app.route('/js/<path:path>')
 def send_js(path):
-    return app.send_from_directory('js', path)
+    return send_from_directory('js', path)
 
 @app.route('/img/<path:path>')
 def send_img(path):
-    return app.send_from_directory('img', path)
+    return send_from_directory('img', path)
 
 @app.route('/css/<path:path>')
 def send_css(path):
-    return app.send_from_directory('css', path)
+    return send_from_directory('css', path)
 
 
 
