@@ -51,7 +51,7 @@ from linebot.models import (
     URITemplateAction,
 )
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__)
 
 firebase = firebase.FirebaseApplication('https://hogu-line-bot.firebaseio.com', None)     
 
@@ -69,26 +69,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-
-# serve static file 
-@app.route('/')
-def root():
-    print "root request aquired!!!!!"
-    return app.send_static_file('index.html')
-
-@app.route('/js/<path:path>')
-def send_js(path):
-    return send_from_directory('js', path)
-
-@app.route('/img/<path:path>')
-def send_img(path):
-    return send_from_directory('img', path)
-
-@app.route('/css/<path:path>')
-def send_css(path):
-    return send_from_directory('css', path)
-
-
 
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
@@ -390,6 +370,10 @@ def callback():
 
     return 'OK'
 
+@app.route('/<path:path>')
+def static_file(path):
+    return app.send_static_file(path)
+    
 if __name__ == "__main__":
     arg_parser = ArgumentParser(
         usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
