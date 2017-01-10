@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>호구돼지</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <style type="text/css">
+
+    @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+    * { font-family: 'Nanum Gothic', serif; }
+
+  html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, textarea, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+          margin: 0;
+          padding: 0;
+          font-size: 100%;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+          font-weight: normal;
+      }
+
+      input, button, textarea {
+          border: 0;
+      }
+
+      body {
+        min-width: 950px;
+        min-height: 800px;
+        background: #ffffff;
+
+        line-height: 1.375;
+        color: #767a86;
+        font-family: 'Helvetica Neue',Helvetica,Tahoma,'Hiragino Kaku Gothic ProN','MS PGothic','Arial Unicode MS',sans-serif;
+        font-size: 14px;
+        font-weight: 300;
+
+        margin: 0;
+        padding: 0;
+      }
+
+
+
+      img {
+          border: 0;
+          vertical-align: top;
+      }
+
+      a:link, a:visited {
+          text-decoration: none;
+      }
+      a:hover, a:active, a:focus {
+          text-decoration: underline;
+      }
+nav, ol, ul {
+    list-style: none;
+}
+
+      .wrap {
+          min-height: 100vh;
+          position: relative;
+          padding-bottom: 179px;
+      }
+
+      .header {
+        height: 80px;
+        position: relative;
+        background: #36d9ec;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+    /*      .contents {
+          width: 950px;
+          min-height: calc(800px - 80px - 178px);
+          padding: 72px 0 150px;
+          margin: auto;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+      }*/
+    /*
+      .contents > .header {
+          height: 450px;
+          background: #474667;
+          padding-top: 118px;
+      }*/
+
+      .header .inner,
+      .contents .inner,
+      .feat-carousel .inner {
+        width: 950px;
+        position: relative;
+        margin: auto;
+      }
+
+      .contents .inner {
+        text-align: center;
+      }
+
+      .contents .landing-cover {
+        height: 450px;
+        background: #ff85a0;
+      }
+
+      .landing-cover img {
+        display: block;
+
+          margin-left: 50%;
+          transform: translateX(-50%);
+      }
+
+
+      .header .logo {
+        padding-top: 22px;
+      }
+
+      .logo a {
+        color: white;
+        font-size: 28px;
+
+        display: inline-block;
+        text-align: left;
+      }
+      .logo a img {
+        height: 42px;
+      }
+
+      .add-friend {
+          padding-top: 103px;
+      }
+
+      .feat-intro {
+          background: #fafbfc;
+          border-top: 1px solid #e6e6e6;
+          border-bottom: 1px solid #e6e6e6;
+      }
+
+      .add-friend .title {
+          color: #000000;
+          font-size: 38px;
+      }
+
+      .add-friend .desc {
+          line-height: 32px;
+          margin: 15px 0 42px;
+          color: #767a86;
+          font-size: 18px;
+      }
+
+      .add-friend .qr-img {
+          width: 140px;
+          position: absolute;
+          left: 50%;
+          bottom: 68px;
+          transform: translateX(-50%);
+      }
+
+      .add-friend .label {
+        position: absolute;
+        left: 50%;
+        font-size: 18px;
+        bottom: 32px;
+        font-weight: normal;
+        transform: translateX(-50%);  
+      }
+      .add-with-button {
+        display: none;
+      }
+      .profile-img {
+        display: block;
+        position: absolute;
+        width: 102px;
+        left: 50%;
+        bottom: 222px;
+        transform: translateX(-50%);
+        border-radius: 51px;
+      }
+
+
+
+      .feat-intro > .inner {
+        padding-top: 103px;
+      }
+
+      .feat-intro .title {
+        color: #000000;
+        font-size: 38px;
+      }
+
+      .feat-intro .feat-list {
+        font-size: 0;
+        margin: 31px 0 94px;
+      }
+
+      .feat-list-item {
+          display: inline-block;
+          margin: 0 40px;
+      }
+
+
+      .feat-list-item img {
+        width: 130px;
+        height: 130px;
+          border-radius: 50%;
+      }
+
+
+      .feat-list-item .desc {
+        color: #767a86;
+        margin-top: 10px;
+        font-size: 18px;
+      }
+
+      .feat-carousel {
+        height: intrinsic;
+      }
+
+      .feat-carousel .desc {
+        color: #767a86;
+        font-size: 18px;
+        text-align: center;
+        margin: 17px 0 45px;
+      }
+
+      .feat-carousel-container .nav-btn {
+        position: relative;
+        z-index: 10000;
+      }
+
+      .feat-carousel-container .nav-btn button {
+          width: 60px;
+          height: 120px;
+          position: absolute;
+          bottom: 156px;
+          overflow: hidden;
+          background-color: transparent;
+          font-size: 0;
+          text-indent: -9999px;
+          padding: 0;
+          outline: none;
+      }
+      .feat-carousel-container .prev {
+          left: 0;
+      }
+      .feat-carousel-container .next {
+          right: 0;
+      }
+      .feat-carousel-container .next::before {
+          right: 0;
+          width: 27px;
+          height: 50px;
+          background-position: -93px 0px;
+          background-image: url(./img/sprite.png);
+      }
+
+      .feat-carousel-container .nav-btn button::before {
+          content: "";
+          position: absolute;
+          top: 35px;
+      }
+      .feat-carousel-container .prev::before {
+          left: 0;
+          width: 27px;
+          height: 50px;
+          background-position: -31px 0px;
+          background-image: url(./img/sprite.png);
+      }
+      .feat-carousel-container .feat-carousel-item img {
+        pointer-events: none;
+      }
+
+
+
+
+
+      .share {
+    padding: 96px 0 50px;
+}
+.share ul {
+    font-size: 0;
+    text-align: center;
+}
+      .share li {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 15px;
+}
+
+
+.foot {
+    width: 100%;
+    height: 178px;
+    background: #fafbfc;
+    border-top: 1px solid #e6e6e6;
+}
+.foot .inner {
+    width: 950px;
+    position: relative;
+    margin: 40px auto 0;
+}
+.link {
+    margin-bottom: 20px;
+}
+.link li {
+    display: inline-block;
+    margin-right: 6px;
+}
+.link a {
+    color: #a3a6ad;
+    font-size: 14px;
+}
+.link li + li::before {
+    content: "";
+    display: inline-block;
+    width: 1px;
+    height: 10px;
+    background: #d7d9dc;
+    margin-right: 10px;
+}
+
+.copy {
+    color: #a3a6ad;
+    font-size: 14px;
+}
+.lang {
+    width: 136px;
+    position: absolute;
+    top: -2px;
+    right: 0;
+}
+.lang .label {
+    height: 25px;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #e5e8eb;
+    color: #767a86;
+    font-size: 12px;
+    line-height: 23px;
+    padding: 0 12px;
+}
+.lang .label:hover {
+    background: #f2f2f2;
+}
+.lang .label::after {
+    content: "";
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 9px;
+    height: 5px;
+    background-position: -147px -122px;
+    background-image: url(./img/sprite.png);
+}
+.lang .lang-list {
+    width: 100%;
+    position: absolute;
+    bottom: 26px;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e5e8eb;
+    padding: 4px 0;
+    box-sizing: border-box;
+}
+.lang li.ExSelected a {
+    color: #16c464;
+}
+.lang a {
+    display: block;
+    color: #767a86;
+    font-size: 12px;
+    line-height: 24px;
+    white-space: nowrap;
+    padding: 0 12px;
+}
+.lang a:link {
+    text-decoration: none;
+}
+
+      @media only screen and (max-width: 736px) {
+        a:link, a:visited, a:hover, a:active, a:focus {
+            text-decoration: none;
+        }
+        html, body, .wrap {
+            min-width: 100%;
+            min-height: 100%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+        }
+        .wrap {
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            padding-bottom: 34px;
+        }
+        .header, .foot {
+            -webkit-box-flex: 0;
+            -webkit-flex: none;
+            flex: none;
+        }
+        .header {
+            width: 100%;
+            height: 50px;
+        }
+        .header .inner,
+        .contents .inner, .feat-carousel .inner {
+            position: relative;
+            padding: 0 15px;
+            width: initial;
+        }
+        .foot .inner {
+            width: initial;
+            padding: 0 15px;
+        }
+
+        .logo a img {
+            height: 20px;
+        }
+        .header .logo {
+            padding-top: 15px;
+        }
+        .contents {
+            overflow: hidden;
+        }
+        .contents .landing-cover {
+            height: 250px;
+            width: 100vw;
+            overflow: hidden;
+        }
+        
+        .landing-cover img {
+          height: 250px;
+          margin-left: 50%;
+          transform: translateX(-50%);
+        }
+
+
+        .add-friend {
+            background: #fafbfc;
+            border-bottom: 1px solid #e6e6e6;
+            text-align: center;
+            padding: 51px 30px 55px;
+        }
+        .add-friend .title {
+            font-size: 25px;
+        }
+        .add-friend .desc {
+            color: #767a86;
+            font-size: 14px;
+            margin-top: 17px;
+            line-height: inherit;
+        }
+        .add-with-qr {
+          display: none;
+        }
+        .add-with-button {
+            display: block;
+            margin-top: 45px;
+        }
+        .add-friend-button {
+            min-width: 160px;
+            height: 45px;
+            display: inline-block;
+            background: #00b900;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 45px;
+            padding: 0 32px;
+        }
+        .add-friend-button::before {
+            content: "";
+            position: relative;
+            top: 5px;
+            width: 22px;
+            height: 21px;
+            background-image: url(./img/sprite.png);
+
+            background-size: 82px auto;
+            background-position: 0px -25px;
+            margin-right: 6px;
+                display: inline-block;
+            overflow: hidden;
+            background-repeat: no-repeat;
+            text-align: left;
+            text-indent: -9999px;             
+        }
+
+        .feat-intro {
+            background: inherit;
+            border-top: none; 
+            padding-top: 51px;
+        }
+        .feat-intro .inner {
+            padding: 0;
+        }
+        .feat-intro .title{
+            font-size: 25px;
+        }
+        .feat-intro .feat-list {
+            margin: 3px auto 47px;
+        }
+        .feat-carousel-item .title {
+            font-size: 16px;
+        }
+        .feat-carousel-item .desc {
+            font-size: 12px;
+        }
+
+        .feat-intro .feat-list-item {
+            display: inline-block;
+            margin: 21px 16px 0;
+        }
+        .feat-list-item img {
+          width: 70px;
+          height: 70px;
+        }
+        .feat-list-item .desc {
+          margin-top: 8px;
+          font-size: 12px;
+        }     
+        .feat-carousel .img {
+        height: 290px;
+      }
+
+     .feat-carousel .img img {
+        height:  100%;
+      }
+      .feat-carousel-container .nav-btn button {
+        width: 35px;
+        height: 60px;
+        position: absolute;
+        bottom: 89px;
+      }
+
+.feat-carousel-container .nav-btn button::before {
+    content: "";
+    position: absolute;
+    top: 13px;
+}
+.feat-carousel-container .prev::before {
+    left: 15px;
+    width: 13px;
+    height: 24px;
+
+    background-position: 0px -126px;
+    background-size: 80px auto;
+}
+
+.feat-carousel-container .next::before {
+    right: 15px;
+    width: 13px;
+    height: 24px;
+
+    background-position: -16px -126px;
+    background-size: 80px auto;
+}
+.share {
+    padding: 55px 0 35px;
+}
+.foot {
+    text-align: center;
+}
+.lang {
+    text-align: center;
+    margin-top: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+/*        .add-friend {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1 1 auto;
+            flex: 1 1 auto;
+        }
+        .add-friend {
+            height: 250px;
+            padding-top: 80px;
+        }*/
+      }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header class="header">
+            <div class="inner">
+                <h1 class="logo"><a href="/"><img src="./img/logo.png" title="DH Sports"/></a></h1>
+            </div>
+        </header>
+
+        <div class="contents">
+            <div class="landing-cover">
+                <!-- 배경이미지와, 간략한 문구로 봇이 전달하는 가치를 표현 -->
+                <img src="./img/landing_cover.png"/>
+            </div>
+
+            <div class="add-friend">
+                <!-- 실제로 할 수 있는 일 -->
+                <!-- 디테일한 과정 설명 -->
+                <!-- 친구 추가할 수 있는 수단을 제공 -->
+                <div class="inner">
+                    <h2 class="title">그룹챗에서 쇼를 펼치세요</h2>
+                    <p class="desc">나만의 스티커를 등록하고,<br> 별명으로 호출할 수 있습니다.
+                    스티커를 조합하여 멀티 리액션 스티커를 만들고 사용해 보세요.</p>
+                    <div class="img add-with-qr">
+                      <img src="./img/add_friend_bg.png" alt="호구돼지">
+                      <img class="qr-img" src="http://qr-official.line.me/M/tsdy3Tqvpl.png">
+                      <p class="label">Add as a friend</p>
+                      <img class="profile-img" src="https://admin-official.line.me/6881811/account/profile.jpg">
+                    </div>
+                    <div class="img add-with-button">
+                      <a href="https://line.me/R/ti/p/%40fku8988m" class="add-friend-button">Add as a friend</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feat-intro">
+                <div class="inner">
+                    <h2 class="title">주요 기능</h2>
+
+                    <ul class="feat-list">
+                        <li class="feat-list-item">
+                            <div class="img"><img src="https://sdl-stickershop.line.naver.jp/products/0/0/1/1336756/LINEStorePC/main.png?__=20161019" alt="GitHub"></div>
+                            <p class="desc">별명등록</p>
+                        </li>
+                        <li class="feat-list-item">
+                            <div class="img"><img src="https://sdl-stickershop.line.naver.jp/products/0/0/1/1299939/android/stickers/12132155.png" alt="GitHub"></div>
+
+                            <p class="desc">멀티스티커 편집</p>
+                        </li>
+                        <li class="feat-list-item">
+                            <div class="img"><img src="https://sdl-stickershop.line.naver.jp/products/0/0/1/1009831/LINEStorePC/main.png?__=20161019" alt="GitHub"></div>
+
+                            <p class="desc">스티커 호출</p>
+                        </li>
+                    </ul>
+
+                    <div class="feat-carousel-container">
+                        <div id="mflick" class="feat-carousel inner">
+                                <div class="feat-carousel-item">
+                                    <p class="title">돼지를 불러보세요</p>
+
+                                    <p class="desc">다른친구가 대답하지않게 조심하세요</p>
+
+                                    <div class="img"><img src="./img/feat_desc_01.png" alt=""></div>
+                                </div>
+                        </div>
+
+                        <div class="nav-btn">
+                            <button type="button" class="prev">Preview</button> <button type="button" class="next">Next</button>
+                        </div><!--/MdLP04Carousel-->
+                    </div><!--       <a href="https://line.me/R/ti/p/%40csh1376l"><img height="36" border="0" alt="친구추가" src="https://scdn.line-apps.com/n/line_add_friends/btn/ko.png"></a> -->
+                </div>
+            </div>
+            <div class="share">
+            </div>
+        </div>
+
+        <footer class="foot" role="contentinfo">
+          <div class="inner">
+          <div class="link">
+          <ul class="mdGFT02Ul">
+            <li><a target="_blank" href="">Privacy Policy</a></li>
+            <li><a target="_blank" href="">Help</a></li>
+            <li><a target="_blank" href="">Customer Support</a></li>
+          </ul>
+          <!--/MdGFT02Link--></div>
+          <p class="copy"><small><b>© HEERUMI Corporation</b></small></p>
+          <div class="lang">
+                <p class="label">한국어</p>
+              <ul class="lang-list" style="display: none;">
+                <li><a href="/set-locale?locale=ja">日本語</a></li>
+                <li><a href="/set-locale?locale=en">English</a></li>
+                <li class="ExSelected"><a href="/set-locale?locale=ko">한국어</a></li>
+                <li><a href="/set-locale?locale=zh_TW">中文(繁體)</a></li>
+              </ul>
+          <!--/MdGFT03Lang--></div>
+          </div>
+        <!--/LyFoot--></footer>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous" type="text/javascript">
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.4.1/pkgd/eg.pkgd.min.js" type="text/javascript">
+</script>
+    <script type="text/javascript">
+    //$(".logo a").html("호구돼지");
+
+
+
+    // eg.agent 를 이용해서 
+        // PC 의 경우 
+        $(".feat-carousel").height(
+          $(".feat-carousel-item").height()
+        );
+     var some = new eg.Flicking("#mflick", {
+            circular : true,
+            duration: 400
+        }).on({
+            beforeRestore : function(e) {  },
+            flickStart : function(e) { }
+        });
+        var timer;
+        function resetAutoSlide() {
+          clearTimeout(timer); 
+          timer = setInterval(function() {
+            some.next();
+          }, 10000);         
+        }
+
+        $(".feat-carousel-container .prev").on("click", function() {
+          resetAutoSlide();
+          some.prev();
+        })
+        $(".feat-carousel-container .next").on("click", function() {
+          resetAutoSlide();
+          some.next();
+        })
+        $(window).on("resize", function(){
+          resetAutoSlide();
+        });
+
+
+        $(window).on("resize", function(){
+          // feat-carousel-item 의 height 을 intitial 로 설정후 computed style 의 height 를 구한다.
+          $(".feat-carousel-item").css("height", "initial");
+          var panelHeight = parseInt(window.getComputedStyle($(".feat-carousel-item")[0]).height);
+          $(".feat-carousel-item").css("height", "100%");
+
+          $(".feat-carousel").height(panelHeight);
+          some.resize();
+        });
+
+        $(".label").on("click", function() {
+          $(".lang-list").toggle();
+        })
+
+        $('a').on("click", function(e) {
+          if( e.target === $(".add-friend-button")[0] ) {
+
+          } else {
+            e.preventDefault();
+            var idx = parseInt(Math.random() * 3);
+            var msg = ["해줄 생각 없어. 돌아가", "링크같은건 없어또", "니가 어디로 가고 싶은 것\n 그건 내가 잘 알겠다."]
+            alert(msg[idx]);
+          }
+        })
+    </script>    
+</body>
+</html>
