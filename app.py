@@ -310,10 +310,10 @@ def answerSticker(**param):
     # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
     printStickerImage(event, packageId, stickerId)
 
-def findCommand(tokens):
-    for token in tokens:
+def findCommandIdx(tokens):
+    for idx, token in enumerate(tokens):
         if token[0] == '@':
-            return token
+            return idx
     
     return None
 
@@ -360,12 +360,13 @@ def callback():
             continue
 
         tokens = event.message.text.split()
-        command = findCommand(tokens)
-        if command is None:
+        commandIdx = findCommandIdx(tokens)
+        if commandIdx is None:
             continue
 
-        command = command[1:]
-        actEvent(command, event=event, tokens=tokens[1:])
+        command = tokens[commandIdx][1:]
+        parameters = tokens[commandIdx+1:]
+        actEvent(command, event=event, tokens=parameters)
         continue
 
     return 'OK'
