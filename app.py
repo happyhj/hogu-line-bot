@@ -293,8 +293,12 @@ def answerStickAdd(**param):
 
 def answerSticker(**param):
     event = param['event']
-    tokens = param['tokens']
-    alias = tokens[0]
+    if param['alias'] is None:
+        tokens = param['tokens']
+        alias = tokens[0]
+    else: # 파라미터를 외부주입 받은 경우
+        alias = param['alias']     
+    
     aliasInfo = firebase.get('/customSticker', alias)
 
     if aliasInfo is None:
@@ -369,7 +373,7 @@ def callback():
 
         # 채팅 도중에 @로 호출한 스티커는 곧바로 예약스티커 로직 태운다.
         if(commandIdx != 0):
-            answerSticker(event=event, tokens=parameters)
+            answerSticker(event=event, tokens=parameters, alias=command)
 
         actEvent(command, event=event, tokens=parameters)
         continue
