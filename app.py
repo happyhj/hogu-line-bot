@@ -293,12 +293,11 @@ def answerStickAdd(**param):
 
 def answerSticker(**param):
     event = param['event']
-    if param['alias'] is None:
-        tokens = param['tokens']
-        alias = tokens[0]
-    else: # 파라미터를 외부주입 받은 경우
-        alias = param['alias']     
-    
+    if 'alias' in param: # 파라미터를 외부주입 받은 경우
+        alias = param['alias']
+    else:
+        alias = param['tokens'][0]
+
     aliasInfo = firebase.get('/customSticker', alias)
 
     if aliasInfo is None:
