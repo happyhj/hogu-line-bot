@@ -366,6 +366,11 @@ def callback():
 
         command = tokens[commandIdx][1:]
         parameters = tokens[commandIdx+1:]
+
+        # 채팅 도중에 @로 호출한 스티커는 곧바로 예약스티커 로직 태운다.
+        if(commandIdx != 0):
+            answerSticker(event=event, tokens=parameters)
+
         actEvent(command, event=event, tokens=parameters)
         continue
 
