@@ -73,12 +73,6 @@ parser = WebhookParser(channel_secret)
 def props(x):
     return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
 
-def isValidRequestCommand(command):
-    if(command[0] != '@'):
-        return False
-
-    return True
-
 def printTextMessage(event, message):
     line_bot_api.reply_message(
         event.reply_token,
@@ -299,8 +293,11 @@ def answerStickAdd(**param):
 
 def answerSticker(**param):
     event = param['event']
-    tokens = param['tokens']
-    alias = tokens[0]
+    if 'alias' in param: # 파라미터를 외부주입 받은 경우
+        alias = param['alias']
+    else:
+        alias = param['tokens'][0]
+
     aliasInfo = firebase.get('/customSticker', alias)
 
     if aliasInfo is None:
@@ -315,7 +312,14 @@ def answerSticker(**param):
 
     # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
     printStickerImage(event, packageId, stickerId)
+
+def findCommandIdx(tokens):
+    for idx, token in enumerate(tokens):
+        if token[0] == '@':
+            return idx
     
+    return None
+
 actDispatcher = {
     '돼지야' : answerPig,
     'stk.call' : answerStickerMessgae,
@@ -359,13 +363,18 @@ def callback():
             continue
 
         tokens = event.message.text.split()
-        command = tokens[0]
-
-        if not isValidRequestCommand(command):
+        commandIdx = findCommandIdx(tokens)
+        if commandIdx is None:
             continue
 
-        command = command[1:]
-        actEvent(command, event=event, tokens=tokens[1:])
+        command = tokens[commandIdx][1:]
+        parameters = tokens[commandIdx+1:]
+
+        # 채팅 도중에 @로 호출한 스티커는 곧바로 예약스티커 로직 태운다.
+        if(commandIdx != 0):
+            answerSticker(event=event, tokens=parameters, alias=command)
+
+        actEvent(command, event=event, tokens=parameters)
         continue
 
     return 'OK'
