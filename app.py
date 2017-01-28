@@ -334,7 +334,7 @@ actDispatcher = {
     'stk.add' : answerStickAdd,
     'stk' : answerSticker,
     # 새해 기념 추가 이벤트
-    '호구돼지야 새해 복 많이 받아' : answerHappyNewYear
+    '새해복많이받아~돼지야' : answerHappyNewYear
 }
 
 @app.route("/callback", methods=['POST'])
