@@ -313,6 +313,10 @@ def answerSticker(**param):
     # 스티커 전송 API 는 기본 내장 스티커만 전송 가능하므로, 이미지 메시지 전송 API 를 사용한다.
     printStickerImage(event, packageId, stickerId)
 
+def answerHappyNewYear(**param):
+    event = param['event']
+    printTextMessage(event, "고마오 닝겐들아!! 새해 복 많이 받고 올해는 꼭 탈때지해야돼얌!")
+
 def findCommandIdx(tokens):
     for idx, token in enumerate(tokens):
         if token[0] == '@':
@@ -328,7 +332,8 @@ actDispatcher = {
     'stk.remove' : answerStickerRemoveCarousel,
     'stk.list' : answerStickerList,
     'stk.add' : answerStickAdd,
-    'stk' : answerSticker
+    'stk' : answerSticker,
+    '돼지야 새해 복 많이 받아' : answerHappyNewYear
 }
 
 @app.route("/callback", methods=['POST'])
