@@ -66,8 +66,16 @@ app = Flask(__name__)
 port = os.getenv('PORT', None);
 parser = getParser()
 
+def parseToken(event):
+    message = event.message.text
+    if '@' not in message:
+        return [None, None]
     
+    tokens = message.split('@', 1)[1].split()
+    if len(tokens) == 0:
+        return [None, None]
 
+    return [tokens[0], tokens[1:]]
 
 def actEvent(command, **param):
     try:
@@ -114,20 +122,18 @@ def callback():
         if not isinstance(event.message, TextMessage):
             continue
 
-        tokens = event.message.text.split()
-        commandIdx = findCommandIdx(tokens)
-        if commandIdx is None:
+        command, parameters = parseToken(event)
+        
+        if command is None:
             continue
 
-        command = tokens[commandIdx][1:]
-        parameters = tokens[commandIdx+1:]
+        # is Command
+        if command in actDispatcher:
+            actEvent(command, event=event, tokens=parameters)
+            continue
 
-        # 채팅 도중에 @로 호출한 스티커는 곧바로 예약스티커 로직 태운다.
-        if(commandIdx != 0):
-            answerSticker(event=event, tokens=parameters, alias=command)
-
-        actEvent(command, event=event, tokens=parameters)
-        continue
+        # try as sticker 
+        answerStickerAlias(event=event, tokens=parameters, alias=command)
 
     return 'OK'
 
