@@ -83,7 +83,21 @@ def actEvent(command, **param):
     except KeyError:
         return 
 
+def answerCommandList(**param):
+    event = param['event']
+    commandDescriptions = """
+        돼지야 : 테스트용
+        stk.img (packageId) (stickerId) : 스티커 미리보기
+        스티커목록 : 스티커 리스트 보기
+        stk (alias): alias에 등록된 스티커 중 하나 랜덤으로 불러오기
+        stk.add (alias) (packageId) (stickerId) : 스티커 추가
+        stk.list (alias) : alias에 등록된 스티커 목록 보기 
+        stk.remove (alias) (packageId) (stickerId) : alias에서 지정한 스티커 제거하기
+    """
+    printTextMessage(event, commandDescriptions)
+    
 actDispatcher = {
+    'help' : answerCommandList,
     '돼지야' : hello,
     '새해복많이받아~돼지야' : happyNewYear,           # 새해 기념 추가 이벤트
 
