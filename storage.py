@@ -63,7 +63,7 @@ def loadCustomSticker(alias):
     stickerInfo = random.choice(stickerList)
     return stickerInfo
 
-def updateCustomStkicker(alias, aliasInfo):
+def updateCustomSticker(alias, aliasInfo):
     firebase.patch('/customSticker/' + alias + '/', aliasInfo)
 
 def saveEvent(event):

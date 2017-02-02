@@ -6,7 +6,7 @@ from storage import (
     saveCustomSticker,
     loadCustomSticker,
     loadCustomStickerList,
-    updateCustomStkicker
+    updateCustomSticker
 )
 
 from carousel_helper import (
