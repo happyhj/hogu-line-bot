@@ -25,7 +25,7 @@ def validateStickAdd(stickerList, newStickerInfo, event):
         
     return True
 
-def saveCustomSticker(alias, stickerInfo):
+def saveCustomSticker(alias, newStickerInfo):
     # 기존 스티커 리스트를 가져와서 
     aliasInfo = firebase.get('/customSticker', alias)    
     
