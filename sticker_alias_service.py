@@ -57,13 +57,13 @@ def answerStickerAlias(**param):
 def answerStickerAliasList(**param):
     event = param['event']
     tokens = param['tokens']
-    alias = tokens[0]
 
-    print(alias)
     # alias를 입력하지 않은 경우,
-    if alias is None:
+    if len(tokens) == 0:
         printTextMessage(event, 'stk.list "스티커이름" 이나 "스티커목록"을 외쳐얌!')
         return
+
+    alias = tokens[0]
 
     # 해당하는 스티커 목록을 가져온다 
     stickerList = loadCustomStickerList(alias)
